@@ -16,11 +16,19 @@ func NewRouter() *gin.Engine {
 	engine.Use(middleware.Authorize)
 
 	r := engine.Group("/api/v1")
+
+	// 不需要认证的API
 	{
 		r := r.Group("/")
 		r.POST("/login", Login)
 		r.POST("/register", Register)
+
+		admin := r.Group("/admin")
+		admin.GET("/init", IsInitialized)
+		admin.POST("/init", InitSystem)
 	}
+
+	// 需要认证的API
 	r = r.Group("/")
 	r.Use(middleware.AuthorizedRequired)
 	{

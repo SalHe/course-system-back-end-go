@@ -2,12 +2,13 @@ package api
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/api/resp"
 	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/dao"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type LoginCredit struct {
@@ -77,7 +78,7 @@ func GetUserInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, resp.Response{
 		Data: map[string]interface{}{
 			"username": claims.Username,
-			"admin":    claims.Admin,
+			"role":     claims.Role,
 		},
 	})
 }

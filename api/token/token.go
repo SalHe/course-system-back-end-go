@@ -4,10 +4,11 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
+	"strconv"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
-	"strconv"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 
 type JwtClaims struct {
 	jwt.StandardClaims
-	Admin    bool   `json:"admin"`
+	Role     uint   `json:"role"`
 	Username string `json:"username"`
 }
 
@@ -29,7 +30,7 @@ func NewJwt(user *dao.User) string {
 			Id: strconv.Itoa(int(user.ID)),
 		},
 		Username: user.Username,
-		Admin:    user.IsAdmin,
+		Role:     user.Role,
 	}).SignedString([]byte(config.Config.Token.SignKey))
 	if err != nil {
 		if errors.Is(err, jwt.ErrInvalidKey) {
@@ -78,4 +79,16 @@ func ClaimsFromJwt(jwtString string) *JwtClaims {
 
 func ToClaims(token string) *JwtClaims {
 	return ClaimsFromJwt(tokenJwt[token])
+}
+
+func (c *JwtClaims) IsAdmin() bool {
+	return c.Role == dao.RoleAdmin
+}
+
+func (c *JwtClaims) IsTeacher() bool {
+	return c.Role == dao.RoleTeacher
+}
+
+func (c *JwtClaims) IsStudent() bool {
+	return c.Role == dao.RoleStudent
 }

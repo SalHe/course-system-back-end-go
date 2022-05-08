@@ -3,6 +3,8 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/api/admin"
+	"github.com/se2022-qiaqia/course-system/api/colleges"
+	"github.com/se2022-qiaqia/course-system/api/courses"
 	"github.com/se2022-qiaqia/course-system/api/user"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
@@ -39,16 +41,33 @@ func NewRouter() *gin.Engine {
 		u.GET("/info", user.GetUserInfo)
 
 	}
-	r = r.Group("/admin")
-	r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
-	{
-		u := r.Group("/user")
-		u.GET("/list/:page/:size", admin.GetUserList)
-		u.GET("/:id", admin.GetUser)
-		u.POST("/:id", admin.UpdateUser)
-		u.DELETE("/:id", admin.DeleteUser)
-		u.POST("/new", admin.NewUser)
-	}
 
+	{
+		r := r.Group("/admin")
+		r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+		{
+			u := r.Group("/user")
+			u.GET("/list/:page/:size", admin.GetUserList)
+			u.GET("/:id", admin.GetUser)
+			u.POST("/:id", admin.UpdateUser)
+			u.DELETE("/:id", admin.DeleteUser)
+			u.POST("/new", admin.NewUser)
+		}
+	}
+	{
+		r := r.Group("/college")
+		r.GET("/list", colleges.ListColleges)
+
+		r = r.Group("/")
+		r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+		r.POST("/new", colleges.NewCollege)
+	}
+	{
+		r := r.Group("/course")
+		{
+			c := r.Group("/")
+			c.GET("/list", courses.GetCourseList)
+		}
+	}
 	return engine
 }

@@ -76,6 +76,8 @@ type CourseCommon struct {
 
 	CollegeId uint    `gorm:"not null"` // 开课学院ID
 	College   College // 开课学院
+
+	CourseSpecifics []CourseSpecific // 课程具体信息
 }
 
 // CourseSpecific 具体课头，指具体开给某一个老师的课程

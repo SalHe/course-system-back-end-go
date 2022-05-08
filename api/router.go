@@ -2,7 +2,10 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/api/admin"
+	"github.com/se2022-qiaqia/course-system/api/user"
 	"github.com/se2022-qiaqia/course-system/config"
+	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/middleware"
 )
 
@@ -20,20 +23,32 @@ func NewRouter() *gin.Engine {
 	// 不需要认证的API
 	{
 		r := r.Group("/")
-		r.POST("/login", Login)
-		r.POST("/register", Register)
+		r.POST("/login", user.Login)
+		r.POST("/register", user.Register)
 
-		admin := r.Group("/admin")
-		admin.GET("/init", IsInitialized)
-		admin.POST("/init", InitSystem)
+		a := r.Group("/admin")
+		a.GET("/init", admin.IsInitialized)
+		a.POST("/init", admin.InitSystem)
 	}
 
 	// 需要认证的API
 	r = r.Group("/")
 	r.Use(middleware.AuthorizedRequired)
 	{
-		user := r.Group("/user")
-		user.GET("/info", GetUserInfo)
+		u := r.Group("/user")
+		u.GET("/info", user.GetUserInfo)
+
 	}
+	r = r.Group("/admin")
+	r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+	{
+		u := r.Group("/user")
+		u.GET("/list/:page/:size", admin.GetUserList)
+		u.GET("/:id", admin.GetUser)
+		u.POST("/:id", admin.UpdateUser)
+		u.DELETE("/:id", admin.DeleteUser)
+		u.POST("/new", admin.NewUser)
+	}
+
 	return engine
 }

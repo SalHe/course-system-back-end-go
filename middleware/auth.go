@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/api/resp"
 	"github.com/se2022-qiaqia/course-system/api/token"
+	"github.com/se2022-qiaqia/course-system/dao"
 	"net/http"
 	"strings"
 )
@@ -35,4 +36,18 @@ func AuthorizedRequired(c *gin.Context) {
 		return
 	}
 	c.Next()
+}
+
+func AuthorizedRoleRequired(roles ...dao.Role) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if claims := GetClaims(c); claims != nil {
+			for _, r := range roles {
+				if r == claims.Role {
+					c.Next()
+					return
+				}
+			}
+		}
+		c.AbortWithStatusJSON(http.StatusUnauthorized, resp.Response{Msg: "您的权限不足"})
+	}
 }

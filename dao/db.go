@@ -5,12 +5,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
 
+type Role = uint
+
 const (
-	RoleStudent = iota
+	RoleStudent = Role(iota)
 	RoleTeacher
 	RoleAdmin
 )
@@ -28,6 +31,10 @@ func Init() {
 		panic("连接数据库失败")
 	} else {
 		DB = db
+	}
+	if config.Config.Debug {
+		DB.Logger.LogMode(logger.Info)
+		DB = DB.Debug()
 	}
 }
 
@@ -47,7 +54,7 @@ type User struct {
 	Username     string  `gorm:"unique;not null;"` // 用户名，可以自定义
 	RealName     string  `gorm:"not null"`         // 真实姓名
 	Password     string  `gorm:"not null"`         // 密码
-	Role         uint    `gorm:"not null"`         //角色，本系统中，一个用户只能有用一种角色
+	Role         Role    `gorm:"not null"`         // 角色，本系统中，一个用户只能有用一种角色
 	CollegeId    uint    `gorm:"not null"`         // 所属学院ID
 	College      College // 所属学院
 	EntranceYear uint    // 入驻学校年份
@@ -118,5 +125,5 @@ func (u *User) SetPassword(password string) {
 }
 
 func (u *User) ComparePassword(password string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) != nil
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
 }

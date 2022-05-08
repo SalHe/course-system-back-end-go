@@ -1,4 +1,4 @@
-package api
+package user
 
 import (
 	"errors"
@@ -25,7 +25,7 @@ func Login(c *gin.Context) {
 	}
 
 	var user *dao.User
-	if err := dao.DB.Model(&dao.User{Username: loginCredit.Username}).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ?", loginCredit.Username, loginCredit.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusNotFound, resp.Response{Msg: "找不到对应用户"})
 		return
 	}
@@ -77,6 +77,7 @@ func GetUserInfo(c *gin.Context) {
 	claims := cla.(*token.JwtClaims)
 	c.JSON(http.StatusOK, resp.Response{
 		Data: map[string]interface{}{
+			"id":       claims.Id,
 			"username": claims.Username,
 			"role":     claims.Role,
 		},

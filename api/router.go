@@ -66,7 +66,13 @@ func NewRouter() *gin.Engine {
 		r := r.Group("/course")
 		{
 			c := r.Group("/")
-			c.GET("/list", courses.GetCourseList)
+			c.POST("/list", courses.GetCourseList)
+
+			c = r.Group("")
+			c.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+			c.POST("", courses.NewCourse)
+			c.PUT("/:id", courses.UpdateCourse)
+			c.POST("/open", courses.OpenCourse)
 		}
 	}
 	return engine

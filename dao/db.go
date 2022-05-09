@@ -86,7 +86,7 @@ type CourseSpecific struct {
 	CourseCommonId  uint              `gorm:"not null"` // 课程公共信息ID
 	CourseCommon    CourseCommon      // 课程公共信息
 	TeacherId       uint              `gorm:"not null"`             // 授课教师ID
-	Teacher         User              `gorm:"foreignkey:TeacherId"` // 授课教师
+	Teacher         User              `gorm:"foreignKey:TeacherId"` // 授课教师
 	Location        string            // 上课地点
 	Quota           uint              // 人数配额
 	QuotaUsed       uint              // 课程已选人数

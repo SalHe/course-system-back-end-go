@@ -1,22 +1,23 @@
-package user
+package api
 
 import (
 	"errors"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/resp"
 	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/model/resp"
 	"gorm.io/gorm"
+	"net/http"
 )
+
+type Public struct{}
 
 type LoginCredit struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-func Login(c *gin.Context) {
+func (api Public) Login(c *gin.Context) {
 	var loginCredit LoginCredit
 	err := c.ShouldBindJSON(&loginCredit)
 	if err != nil {
@@ -40,7 +41,7 @@ func Login(c *gin.Context) {
 	c.AbortWithStatusJSON(http.StatusUnauthorized, resp.Response{Msg: "用户不存在或密码错误"})
 }
 
-func Register(c *gin.Context) {
+func (api Public) Register(c *gin.Context) {
 	var b struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -71,16 +72,4 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusConflict, resp.Response{Msg: "用户已存在"})
 		return
 	}
-}
-
-func GetUserInfo(c *gin.Context) {
-	cla, _ := c.Get("claims")
-	claims := cla.(*token.JwtClaims)
-	c.JSON(http.StatusOK, resp.Response{
-		Data: map[string]interface{}{
-			"id":       claims.Id,
-			"username": claims.Username,
-			"role":     claims.Role,
-		},
-	})
 }

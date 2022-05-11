@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/resp"
 	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/model/resp"
 	"net/http"
 	"strings"
 )

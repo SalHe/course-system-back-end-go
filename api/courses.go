@@ -1,13 +1,15 @@
-package courses
+package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/resp"
+	"github.com/se2022-qiaqia/course-system/model/resp"
 	"github.com/se2022-qiaqia/course-system/services"
 	"net/http"
 )
 
-func GetCourseList(c *gin.Context) {
+type Course struct{}
+
+func (api Course) GetCourseList(c *gin.Context) {
 	var b services.QueryCoursesServices
 	if err := c.BindJSON(&b); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入参数"})
@@ -22,7 +24,7 @@ func GetCourseList(c *gin.Context) {
 	}
 }
 
-func NewCourse(c *gin.Context) {
+func (api Course) NewCourse(c *gin.Context) {
 	var b services.NewCourseService
 	if err := c.BindJSON(&b); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})
@@ -37,7 +39,7 @@ func NewCourse(c *gin.Context) {
 	}
 }
 
-func OpenCourse(c *gin.Context) {
+func (api Course) OpenCourse(c *gin.Context) {
 	var b services.OpenCourseService
 	if err := c.BindJSON(&b); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})
@@ -52,4 +54,6 @@ func OpenCourse(c *gin.Context) {
 	}
 }
 
-func UpdateCourse(c *gin.Context) {}
+func (api Course) UpdateCourse(c *gin.Context) {
+	// TODO
+}

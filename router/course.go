@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/courses"
+	"github.com/se2022-qiaqia/course-system/api"
 	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/middleware"
 )
@@ -16,11 +16,11 @@ func (c Course) Init(Router *gin.RouterGroup) {
 	privateRouter.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
 
 	{
-		publicRouter.POST("/list", courses.GetCourseList)
+		publicRouter.POST("/list", api.Api.Course.GetCourseList)
 	}
 	{
-		privateRouter.POST("", courses.NewCourse)
-		privateRouter.PUT("/:id", courses.UpdateCourse)
-		privateRouter.POST("/open", courses.OpenCourse)
+		privateRouter.POST("", api.Api.Course.NewCourse)
+		privateRouter.PUT("/:id", api.Api.Course.UpdateCourse)
+		privateRouter.POST("/open", api.Api.Course.OpenCourse)
 	}
 }

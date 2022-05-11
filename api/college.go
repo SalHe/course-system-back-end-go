@@ -1,13 +1,15 @@
-package colleges
+package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/resp"
+	"github.com/se2022-qiaqia/course-system/model/resp"
 	"github.com/se2022-qiaqia/course-system/services"
 	"net/http"
 )
 
-func ListColleges(c *gin.Context) {
+type College struct{}
+
+func (api College) ListColleges(c *gin.Context) {
 	var b services.QueryCollegesService
 	if err := c.BindJSON(&b); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})
@@ -16,7 +18,7 @@ func ListColleges(c *gin.Context) {
 	c.JSON(http.StatusOK, resp.Response{Data: b.Query()})
 }
 
-func NewCollege(c *gin.Context) {
+func (api College) NewCollege(c *gin.Context) {
 	var b services.NewCollegeService
 	if err := c.BindJSON(&b); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})

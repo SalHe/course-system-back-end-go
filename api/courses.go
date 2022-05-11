@@ -55,5 +55,5 @@ func (api Course) OpenCourse(c *gin.Context) {
 }
 
 func (api Course) UpdateCourse(c *gin.Context) {
-	// TODO
+	// TODO 实现 UpdateCourse
 }

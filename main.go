@@ -13,6 +13,9 @@ func main() {
 	dao.Init()
 	dao.Migrate()
 
+	// TODO 规范响应体
+	// TODO 响应体脱敏
+
 	_ = router.NewRouter().Run(fmt.Sprintf(":%d", config.Config.Server.Port))
 
 	log.Logger.Printf("Server is running on port %d\n", config.Config.Server.Port)

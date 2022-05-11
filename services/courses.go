@@ -14,8 +14,7 @@ type QueryCoursesServices struct {
 }
 
 func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err error) {
-	db := dao.DB.Preload("CourseSpecifics").Preload("College").Model(&dao.CourseCommon{}).
-		Preload("Teacher").Model(&dao.CourseSpecific{})
+	db := dao.DB.Preload("CourseSpecifics").Preload("College").Model(&dao.CourseCommon{})
 	if len(q.Name) > 0 {
 		db = db.Where("name like (?)", "%"+q.Name+"%")
 	}
@@ -32,7 +31,9 @@ func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err er
 			conditions = append(conditions, "teacher_id in (?)", dao.DB.Table("users").Where("real_name like ?", "%"+q.TeacherName+"%").Select("id"))
 		}
 		if len(conditions) > 0 {
-			db = db.Preload("CourseSpecifics", conditions...)
+			db = db.Preload("CourseSpecifics", conditions...).
+				Preload("CourseSpecifics." + clause.Associations).
+				Preload("CourseSpecifics.Teacher.College")
 		}
 	}
 

@@ -54,13 +54,14 @@ func Register(c *gin.Context) {
 
 	var user dao.User
 	if err = dao.DB.Model(&dao.User{}).Where("username = ?", b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		if err := dao.DB.Create(&dao.User{
+		user = dao.User{
 			Model: gorm.Model{
 				ID: b.Id,
 			},
 			Username: b.Username,
-			Password: b.Password,
-		}); err != nil {
+		}
+		user.SetPassword(b.Password)
+		if err = dao.DB.Create(&user).Error; err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, resp.Response{Msg: "注册失败！"})
 			return
 		}

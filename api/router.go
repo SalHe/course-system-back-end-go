@@ -2,13 +2,9 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/admin"
-	"github.com/se2022-qiaqia/course-system/api/colleges"
-	"github.com/se2022-qiaqia/course-system/api/courses"
-	"github.com/se2022-qiaqia/course-system/api/user"
 	"github.com/se2022-qiaqia/course-system/config"
-	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/middleware"
+	R "github.com/se2022-qiaqia/course-system/router"
 )
 
 func NewRouter() *gin.Engine {
@@ -23,57 +19,16 @@ func NewRouter() *gin.Engine {
 	r := engine.Group("/api/v1")
 
 	// 不需要认证的API
-	{
-		r := r.Group("/")
-		r.POST("/login", user.Login)
-		r.POST("/register", user.Register)
-
-		a := r.Group("/admin")
-		a.GET("/init", admin.IsInitialized)
-		a.POST("/init", admin.InitSystem)
-	}
+	publicRouter := r.Group("")
+	R.Router.Public.Init(publicRouter)
+	R.Router.Start.Init(publicRouter)
 
 	// 需要认证的API
-	r = r.Group("/")
-	r.Use(middleware.AuthorizedRequired)
-	{
-		u := r.Group("/user")
-		u.GET("/info", user.GetUserInfo)
+	authenticatedRouter := r.Group("")
+	authenticatedRouter.Use(middleware.AuthorizedRequired)
+	R.Router.User.Init(authenticatedRouter)
+	R.Router.Course.Init(authenticatedRouter)
+	R.Router.College.Init(authenticatedRouter)
 
-	}
-
-	{
-		r := r.Group("/admin")
-		r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
-		{
-			u := r.Group("/user")
-			u.GET("/list/:page/:size", admin.GetUserList)
-			u.GET("/:id", admin.GetUser)
-			u.POST("/:id", admin.UpdateUser)
-			u.DELETE("/:id", admin.DeleteUser)
-			u.POST("/new", admin.NewUser)
-		}
-	}
-	{
-		r := r.Group("/college")
-		r.GET("/list", colleges.ListColleges)
-
-		r = r.Group("/")
-		r.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
-		r.POST("/new", colleges.NewCollege)
-	}
-	{
-		r := r.Group("/course")
-		{
-			c := r.Group("/")
-			c.POST("/list", courses.GetCourseList)
-
-			c = r.Group("")
-			c.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
-			c.POST("", courses.NewCourse)
-			c.PUT("/:id", courses.UpdateCourse)
-			c.POST("/open", courses.OpenCourse)
-		}
-	}
 	return engine
 }

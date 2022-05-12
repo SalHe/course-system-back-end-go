@@ -5,7 +5,6 @@ import (
 	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/resp"
-	"net/http"
 	"strings"
 )
 
@@ -32,7 +31,7 @@ func Authorize(context *gin.Context) {
 
 func AuthorizedRequired(c *gin.Context) {
 	if GetClaims(c) == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, resp.Response{Msg: "请先登录"})
+		resp.Fail(resp.ErrCodeUnauthorized, "请先登录", c)
 		return
 	}
 	c.Next()
@@ -48,6 +47,6 @@ func AuthorizedRoleRequired(roles ...dao.Role) func(c *gin.Context) {
 				}
 			}
 		}
-		c.AbortWithStatusJSON(http.StatusUnauthorized, resp.Response{Msg: "您的权限不足"})
+		resp.Fail(resp.ErrCodeUnauthorized, "您的权限不足", c)
 	}
 }

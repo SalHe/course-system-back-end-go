@@ -86,7 +86,10 @@ func (o OpenCourseService) OpenCourse() (course dao.CourseSpecific, err error) {
 		err = dao.DB.Model(&course).Association("CourseSchedules").Append(o.CourseSchedules)
 		if err == nil {
 			var t dao.CourseSpecific
-			dao.DB.Preload(clause.Associations).Find(&t, course.ID)
+			dao.DB.Preload(clause.Associations).
+				Preload("Teacher.College").
+				Preload("CourseCommon.College").
+				Find(&t, course.ID)
 			course = t
 		}
 	}

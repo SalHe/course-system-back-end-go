@@ -2,33 +2,39 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	"github.com/se2022-qiaqia/course-system/services"
-	"net/http"
 )
 
 type College struct{}
 
 func (api College) ListColleges(c *gin.Context) {
 	var b services.QueryCollegesService
-	if err := c.BindJSON(&b); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})
+	if !req.BindAndValidate(c, &b) {
 		return
 	}
-	c.JSON(http.StatusOK, resp.Response{Data: b.Query()})
+
+	results := b.Query()
+	actual := make([]*resp.College, len(results))
+	for i, result := range results {
+		actual[i] = resp.NewCollege(&result)
+	}
+	resp.Ok(actual, c)
+	return
 }
 
 func (api College) NewCollege(c *gin.Context) {
 	var b services.NewCollegeService
-	if err := c.BindJSON(&b); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请输入正确的参数"})
+	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
 	if college, err := b.NewCollege(); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "创建失败"})
+		resp.FailJust("创建失败", c)
 		return
 	} else {
-		c.JSON(http.StatusOK, resp.Response{Data: college})
+		resp.Ok(resp.NewCollege(college), c)
+		return
 	}
 }

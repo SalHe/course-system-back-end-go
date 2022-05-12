@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"time"
 )
 
 var DB *gorm.DB
@@ -48,9 +49,16 @@ func Migrate() {
 	DB.AutoMigrate(&StudentCourse{})
 }
 
+type Model struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
 // User 定义用户的信息
 type User struct {
-	gorm.Model
+	Model
 	Username     string  `gorm:"unique;not null;"` // 用户名，可以自定义
 	RealName     string  `gorm:"not null"`         // 真实姓名
 	Password     string  `gorm:"not null"`         // 密码
@@ -62,13 +70,13 @@ type User struct {
 
 // College 学院
 type College struct {
-	gorm.Model
+	Model
 	Name string `gorm:"unique;not null;"` // 学院名
 }
 
 // CourseCommon 课程公共信息
 type CourseCommon struct {
-	gorm.Model
+	Model
 	Name string `gorm:"not null"` // 课程名
 
 	Credits float32 // 学分
@@ -82,7 +90,7 @@ type CourseCommon struct {
 
 // CourseSpecific 具体课头，指具体开给某一个老师的课程
 type CourseSpecific struct {
-	gorm.Model
+	Model
 	CourseCommonId  uint              `gorm:"not null"` // 课程公共信息ID
 	CourseCommon    CourseCommon      // 课程公共信息
 	TeacherId       uint              `gorm:"not null"`             // 授课教师ID
@@ -97,21 +105,21 @@ type CourseSpecific struct {
 
 // Semester 学期
 type Semester struct {
-	gorm.Model
+	Model
 	Year uint // 年份
 	Term uint // 对应年份第几学期
 }
 
 // CourseSchedule 上课时间
 type CourseSchedule struct {
-	gorm.Model
+	Model
 	DayOfWeek uint // 每周第几天
 	HoursId   uint // 第几节课
 }
 
 // StudentCourse 学生和具体某门课的关系
 type StudentCourse struct {
-	gorm.Model
+	Model
 	StudentId uint           // 学生ID
 	Student   User           `gorm:"foreignKey:StudentId"` // 学生
 	CourseId  uint           // 课程ID

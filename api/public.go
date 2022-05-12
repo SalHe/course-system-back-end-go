@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type Public struct{}
@@ -19,26 +19,22 @@ type LoginCredit struct {
 
 func (api Public) Login(c *gin.Context) {
 	var loginCredit LoginCredit
-	err := c.ShouldBindJSON(&loginCredit)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请指定用户名和密码"})
+	if !req.BindAndValidate(c, &loginCredit) {
 		return
 	}
 
 	var user *dao.User
 	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ?", loginCredit.Username, loginCredit.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, resp.Response{Msg: "找不到对应用户"})
+		resp.Fail(resp.ErrCodeNotFound, "找不到对应用户", c)
 		return
 	}
 
 	if user.ComparePassword(loginCredit.Password) {
-		c.JSON(http.StatusOK, resp.Response{
-			Msg:  "登录成功",
-			Data: token.NewToken(user),
-		})
+		resp.Ok(token.NewToken(user), c)
 		return
 	}
-	c.AbortWithStatusJSON(http.StatusUnauthorized, resp.Response{Msg: "用户不存在或密码错误"})
+	resp.Fail(resp.ErrCodeUnauthorized, "用户不存在或密码错误", c)
+	return
 }
 
 func (api Public) Register(c *gin.Context) {
@@ -47,29 +43,29 @@ func (api Public) Register(c *gin.Context) {
 		Password string `json:"password"`
 		Id       uint   `json:"id"`
 	}
-	err := c.ShouldBindJSON(&b)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, resp.Response{Msg: "请正确指定注册信息"})
+	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
+	// TODO 用户名不可为纯数字
+
 	var user dao.User
-	if err = dao.DB.Model(&dao.User{}).Where("username = ?", b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := dao.DB.Unscoped().Model(&dao.User{}).Where("id = ? OR username = ?", b.Id, b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		user = dao.User{
-			Model: gorm.Model{
+			Model: dao.Model{
 				ID: b.Id,
 			},
 			Username: b.Username,
 		}
 		user.SetPassword(b.Password)
 		if err = dao.DB.Create(&user).Error; err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, resp.Response{Msg: "注册失败！"})
+			resp.FailJust("注册失败！", c)
 			return
 		}
-		c.JSON(http.StatusOK, resp.Response{Msg: "注册成功！"})
+		resp.Ok(true, c)
 		return
 	} else {
-		c.JSON(http.StatusConflict, resp.Response{Msg: "用户已存在"})
+		resp.Fail(resp.ErrCodeConflict, "用户已存在", c)
 		return
 	}
 }

@@ -1,22 +1,54 @@
 package resp
 
-import "github.com/se2022-qiaqia/course-system/dao"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
-type Response struct {
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+type ErrorResponse struct {
+	Msg  string  `json:"msg"`
+	Code ErrCode `json:"code"`
 }
 
-type User struct {
-	Id           uint     `json:"id"`
-	Username     string   `json:"username"`
-	RealName     string   `json:"realName"`
-	Role         dao.Role `json:"role"`
-	College      College  `json:"college"`
-	EntranceYear uint     `json:"entranceYear"`
+type ErrCode int
+
+const (
+	_ = iota
+	ErrCodeFail
+	ErrCodeNotFound
+	ErrCodeConflict
+	ErrCodeUnauthorized
+	ErrCodeInternal
+)
+
+var errAndHttpCode = map[ErrCode]int{
+	ErrCodeFail:         http.StatusBadRequest,
+	ErrCodeNotFound:     http.StatusNotFound,
+	ErrCodeConflict:     http.StatusConflict,
+	ErrCodeUnauthorized: http.StatusUnauthorized,
+	ErrCodeInternal:     http.StatusInternalServerError,
 }
 
-type College struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
+func Ok(data interface{}, c *gin.Context) {
+	c.JSON(http.StatusOK, data)
+}
+
+func FailJust(msg string, c *gin.Context) {
+	Fail(http.StatusBadRequest, msg, c)
+}
+
+func Fail(errCode ErrCode, msg string, c *gin.Context) {
+	var status int
+	var find bool
+	if status, find = errAndHttpCode[errCode]; !find {
+		status = http.StatusBadRequest
+	}
+	FailWithHttpStatus(status, errCode, msg, c)
+}
+
+func FailWithHttpStatus(httpCode int, errCode ErrCode, msg string, c *gin.Context) {
+	c.AbortWithStatusJSON(httpCode, ErrorResponse{
+		Msg:  msg,
+		Code: errCode,
+	})
 }

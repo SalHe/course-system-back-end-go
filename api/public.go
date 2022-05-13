@@ -13,8 +13,8 @@ import (
 type Public struct{}
 
 type LoginCredit struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" binding:"required,username" description:"用户名"`
+	Password string `json:"password" binding:"required,password" description:"密码"`
 }
 
 func (api Public) Login(c *gin.Context) {
@@ -39,15 +39,13 @@ func (api Public) Login(c *gin.Context) {
 
 func (api Public) Register(c *gin.Context) {
 	var b struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username string `json:"username" binding:"required,username" description:"用户名"`
+		Password string `json:"password" binding:"required,password" description:"密码"`
 		Id       uint   `json:"id"`
 	}
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
-
-	// TODO 用户名不可为纯数字
 
 	var user dao.User
 	if err := dao.DB.Unscoped().Model(&dao.User{}).Where("id = ? OR username = ?", b.Id, b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {

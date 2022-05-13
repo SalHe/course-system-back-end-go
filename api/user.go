@@ -38,12 +38,12 @@ func (api User) GetOtherUserInfo(c *gin.Context) {
 
 type NewUserRequest struct {
 	Id           uint     `json:"id" binding:"required"`
-	Username     string   `json:"username" binding:"required" validate:"min=5;max=20"`
-	Password     string   `json:"password" binding:"required" validate:"regexp=^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"`
-	RealName     string   `json:"realName" binding:"required" validate:"min=1;max=10"`
-	CollegeId    uint     `json:"collegeId" binding:"required"`
-	Role         dao.Role `json:"role"`
-	EntranceYear uint     `json:"entranceYear" binding:"required"`
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`
+	Password     string   `json:"password" binding:"required,password" description:"密码"`
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`
+	CollegeId    uint     `json:"collegeId" binding:"required" description:"学院id"`
+	Role         dao.Role `json:"role" description:"角色"`
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"`
 }
 
 func (api User) NewUser(c *gin.Context) {
@@ -109,11 +109,11 @@ func (api User) DeleteUser(c *gin.Context) {
 }
 
 type UpdateUserRequest struct {
-	Username     string   `json:"username" binding:"required" validate:"min=5;max=20"`
-	RealName     string   `json:"realName" binding:"required" validate:"min=1;max=10"`
-	CollegeId    uint     `json:"collegeId" binding:"required"`
-	Role         dao.Role `json:"role"`
-	EntranceYear uint     `json:"entranceYear" binding:"required"`
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`
+	CollegeId    uint     `json:"collegeId" binding:"required,min=1" description:"学院id"`
+	Role         dao.Role `json:"role" binding:"required" description:"角色"`
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"`
 }
 
 func (api User) UpdateUser(c *gin.Context) {

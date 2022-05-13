@@ -16,7 +16,7 @@ func (c College) Init(Router *gin.RouterGroup) {
 	privateRouter.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
 
 	{
-		publicRouter.GET("/list", api.Api.College.ListColleges)
+		publicRouter.POST("/list", api.Api.College.ListColleges)
 	}
 	{
 		privateRouter.POST("/new", api.Api.College.NewCollege)

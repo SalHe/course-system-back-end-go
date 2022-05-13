@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/middleware"
+	"github.com/se2022-qiaqia/course-system/model/req"
 )
 
 func NewRouter() *gin.Engine {
@@ -12,6 +13,8 @@ func NewRouter() *gin.Engine {
 	if !config.Config.Debug {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	req.InitValidation()
 
 	engine.Use(middleware.Authorize)
 

@@ -7,10 +7,10 @@ import (
 
 type QueryCoursesServices struct {
 	Page
-	Name        string `json:"name"`
-	Semester    uint   `json:"semester"`
-	TeacherName string `json:"teacherName"`
-	CollegesId  []uint `json:"collegesId"`
+	Name        string `json:"name" description:"课程名称"`
+	Semester    uint   `json:"semester" description:"学期"`
+	TeacherName string `json:"teacherName" description:"教师名称"`
+	CollegesId  []uint `json:"collegesId" description:"包含的学院id"`
 }
 
 func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err error) {
@@ -42,10 +42,10 @@ func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err er
 }
 
 type NewCourseService struct {
-	Name      string  `json:"name"`
-	CollegeId uint    `json:"collegeId"`
-	Credits   float32 `json:"credits"`
-	Hours     uint    `json:"hours"`
+	Name      string  `json:"name" description:"课程名称"`
+	CollegeId uint    `json:"collegeId" description:"学院id"`
+	Credits   float32 `json:"credits" description:"学分"`
+	Hours     uint    `json:"hours" description:"学时"`
 }
 
 func (n NewCourseService) NewCourse() (courseCommon *dao.CourseCommon, err error) {
@@ -63,12 +63,12 @@ func (n NewCourseService) NewCourse() (courseCommon *dao.CourseCommon, err error
 }
 
 type OpenCourseService struct {
-	CourseCommonId  uint                  `json:"courseCommonId"`
-	SemesterId      uint                  `json:"semesterId"`
-	TeacherId       uint                  `json:"teacherId"`
-	Location        string                `json:"location"`
-	Quota           uint                  `json:"quota"`
-	CourseSchedules []*dao.CourseSchedule `json:"courseSchedules"`
+	CourseCommonId  uint                  `json:"courseCommonId" description:"课程id"`
+	SemesterId      uint                  `json:"semesterId" description:"学期id"`
+	TeacherId       uint                  `json:"teacherId" description:"教师id"`
+	Location        string                `json:"location" description:"上课地点"`
+	Quota           uint                  `json:"quota" description:"容量"`
+	CourseSchedules []*dao.CourseSchedule `json:"courseSchedules" description:"上课时间"`
 }
 
 func (o OpenCourseService) OpenCourse() (course dao.CourseSpecific, err error) {

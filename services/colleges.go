@@ -5,7 +5,7 @@ import (
 )
 
 type QueryCollegesService struct {
-	Name string `json:"name"`
+	Name string `json:"name" description:"学院名称"`
 }
 
 func (q QueryCollegesService) Query() []dao.College {
@@ -19,7 +19,7 @@ func (q QueryCollegesService) Query() []dao.College {
 }
 
 type NewCollegeService struct {
-	Name string `json:"name"`
+	Name string `json:"name" description:"学院名称"`
 }
 
 func (n NewCollegeService) NewCollege() (*dao.College, error) {

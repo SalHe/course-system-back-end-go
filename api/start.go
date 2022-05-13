@@ -20,11 +20,10 @@ func (api Start) IsInitialized(c *gin.Context) {
 }
 
 type InitRequest struct {
-	Id               uint   `json:"id" binding:"required"`
-	Username         string `json:"username" binding:"required"`
-	Password         string `json:"password" binding:"required"`
-	RealName         string `json:"realName" binding:"required"`
-	AdminCollegeName string `json:"adminCollegeName" binding:"required"`
+	Id       uint   `json:"id" binding:"required" description:"管理员ID"`
+	Username string `json:"username" binding:"required,username" description:"管理员用户名"`
+	Password string `json:"password" binding:"required,password" description:"管理员密码"`
+	RealName string `json:"realName" binding:"required,min=2,max=10" description:"管理员真实姓名"`
 }
 
 func (api Start) InitSystem(c *gin.Context) {
@@ -43,10 +42,7 @@ func (api Start) InitSystem(c *gin.Context) {
 			return
 		}
 
-		var adminCollegeName = b.AdminCollegeName
-		if len(adminCollegeName) == 0 {
-			adminCollegeName = "管理员"
-		}
+		var adminCollegeName = "_____ADMIN"
 
 		user := &dao.User{
 			Model:    dao.Model{ID: b.Id},

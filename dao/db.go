@@ -12,11 +12,18 @@ import (
 var DB *gorm.DB
 
 type Role = uint
+type CourseStatus = uint
 
 const (
 	RoleStudent = Role(iota)
 	RoleTeacher
 	RoleAdmin
+)
+
+const (
+	CourseStatusNormal   = CourseStatus(iota) // 正常（已选上，正常上课中）
+	CourseStatusWithdraw                      // 撤销（已退课）
+	CourseStatusClosed                        // 已结课
 )
 
 func Init() {
@@ -120,10 +127,12 @@ type CourseSchedule struct {
 // StudentCourse 学生和具体某门课的关系
 type StudentCourse struct {
 	Model
-	StudentId uint           // 学生ID
-	Student   User           `gorm:"foreignKey:StudentId"` // 学生
-	CourseId  uint           // 课程ID
-	Course    CourseSpecific `gorm:"foreignKey:CourseId"` // 具体课程
+	StudentId    uint           // 学生ID
+	Student      User           `gorm:"foreignKey:StudentId"` // 学生
+	CourseId     uint           // 课程ID
+	Course       CourseSpecific `gorm:"foreignKey:CourseId"` // 具体课程
+	CourseStatus CourseStatus   // 课程状态
+	Score        uint           // 学生成绩
 }
 
 func (u *User) SetPassword(password string) {

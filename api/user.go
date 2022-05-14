@@ -14,6 +14,16 @@ import (
 
 type User struct{}
 
+// GetUserInfo
+// @Summary					获取当前登录用户信息。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/info		[get]
 func (api User) GetUserInfo(c *gin.Context) {
 	cla, _ := c.Get("claims")
 	claims := cla.(*token.JwtClaims)
@@ -24,6 +34,17 @@ func (api User) GetUserInfo(c *gin.Context) {
 	}, c)
 }
 
+// GetOtherUserInfo
+// @Summary					获取任意用户信息。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					id				path		int			true		"用户id"
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/{id}		[get]
 func (api User) GetOtherUserInfo(c *gin.Context) {
 	id := c.Param("id")
 	var user dao.User
@@ -36,16 +57,28 @@ func (api User) GetOtherUserInfo(c *gin.Context) {
 	return
 }
 
+// NewUserRequest 新增用户信息
 type NewUserRequest struct {
-	Id           uint     `json:"id" binding:"required"`
-	Username     string   `json:"username" binding:"required,username" description:"用户名"`
-	Password     string   `json:"password" binding:"required,password" description:"密码"`
-	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`
-	CollegeId    uint     `json:"collegeId" binding:"required" description:"学院id"`
-	Role         dao.Role `json:"role" description:"角色"`
-	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"`
+	Id           uint     `json:"id" binding:"required"`                                          // 用户id
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`         // 用户名
+	Password     string   `json:"password" binding:"required,password" description:"密码"`          // 密码
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`    // 真实姓名
+	CollegeId    uint     `json:"collegeId" binding:"required" description:"学院id"`                // 学院id
+	Role         dao.Role `json:"role" description:"角色"`                                          // 角色
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"` // 入学/入职年份
 }
 
+// NewUser
+// @Summary					添加用户。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					params			body 		NewUserRequest	true		"添加用户"
+// @Success 				200 			{object}	boolean
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/new		[post]
 func (api User) NewUser(c *gin.Context) {
 	var b NewUserRequest
 	if !req.BindAndValidate(c, &b) {
@@ -76,6 +109,18 @@ func (api User) NewUser(c *gin.Context) {
 	}
 }
 
+// GetUserList
+// @Summary					获取用户列表。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					page 			path 		int			false		"页码"
+// @Param					size 			path 		int			false		"每页数量"
+// @Success 				200 			{array}		resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/list/{page}/{size}		[get]
 func (api User) GetUserList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Param("page"))
 	size, _ := strconv.Atoi(c.Param("size"))
@@ -92,6 +137,17 @@ func (api User) GetUserList(c *gin.Context) {
 	return
 }
 
+// DeleteUser
+// @Summary					删除指定用户。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					id				path		int			true		"用户id"
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/{id}		[delete]
 func (api User) DeleteUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var user dao.User
@@ -104,22 +160,35 @@ func (api User) DeleteUser(c *gin.Context) {
 		resp.Fail(resp.ErrCodeInternal, "删除用户失败", c)
 		return
 	}
-	resp.Ok(true, c)
+	resp.Ok(resp.NewUser(&user), c)
 	return
 }
 
+// UpdateUserRequest 更新用户信息
 type UpdateUserRequest struct {
-	Username     string   `json:"username" binding:"required,username" description:"用户名"`
-	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`
-	CollegeId    uint     `json:"collegeId" binding:"required,min=1" description:"学院id"`
-	Role         dao.Role `json:"role" binding:"required" description:"角色"`
-	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"`
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`         // 用户名
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`    // 真实姓名
+	CollegeId    uint     `json:"collegeId" binding:"required,min=1" description:"学院id"`          // 学院id
+	Role         dao.Role `json:"role" binding:"required" description:"角色"`                       // 角色
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"` // 入学/入职年份
 }
 
+// UpdateUser
+// @Summary					更新任意用户信息。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					id				path		int							true		"用户id"
+// @Param					info 			body		UpdateUserRequest			true		"新用户信息"
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/{id}		[post]
 func (api User) UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 	var user dao.User
-	if err := dao.DB.Find(&user, id).Error; err != nil {
+	if err := dao.DB.Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		resp.Fail(resp.ErrCodeNotFound, "未找到对应用户", c)
 		return
 	}
@@ -127,6 +196,8 @@ func (api User) UpdateUser(c *gin.Context) {
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
+
+	oldUserInfo := resp.NewUser(&user)
 
 	user.Username = b.Username
 	user.RealName = b.RealName
@@ -137,6 +208,6 @@ func (api User) UpdateUser(c *gin.Context) {
 		resp.Fail(resp.ErrCodeInternal, "更新用户失败", c)
 		return
 	}
-	resp.Ok(true, c)
+	resp.Ok(oldUserInfo, c)
 	return
 }

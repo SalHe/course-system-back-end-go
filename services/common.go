@@ -1,8 +1,9 @@
 package services
 
+// Page 分页信息
 type Page struct {
-	Page int `json:"page"`
-	Size int `json:"size"`
+	Page int `json:"page"` // 当前页
+	Size int `json:"size"` // 每页大小
 }
 
 func (p Page) ActualPage() int {

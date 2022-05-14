@@ -91,8 +91,8 @@ func BindAndValidate(c *gin.Context, obj interface{}) bool {
 				finalMsg += /*key + ":" +*/ msg + ";\n"
 			}
 			resp.FailJust(finalMsg, c)
+			return false
 		}
-		return false
 	}
 	return true
 }

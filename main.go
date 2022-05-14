@@ -4,16 +4,19 @@ import (
 	"fmt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
-	"github.com/se2022-qiaqia/course-system/docs"
+	docs "github.com/se2022-qiaqia/course-system/docs/swagger"
 	"github.com/se2022-qiaqia/course-system/log"
 	"github.com/se2022-qiaqia/course-system/router"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title								Course System
-// @version								1.0
-// @description							Course System
+//go:generate swag init -o docs/swagger
+
+// @title 								选课系统
+// @version 							1.0
+// @description 						软件工程课设——选课系统.
+// @termsOfService 						http://swagger.io/terms/
 
 // @contact.name 						Qiaqia
 // @contact.url 						https://github.com/se2022-qiaqia
@@ -23,7 +26,8 @@ import (
 // @securityDefinitions.apikey 			ApiKeyAuth
 // @in 									header
 // @name 								Authorization
-// @description 						Bearer <Token>
+// ----@description 						Bearer <Token>
+// 我也不知道这里搞什么玩意儿他不给我生成认证的描述，很是无语
 
 func main() {
 	config.Init()

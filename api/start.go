@@ -15,17 +15,39 @@ func isInitialized() bool {
 	return err == nil && count >= 1
 }
 
+// IsInitialized
+// @Summary					检测是否已初始化系统。
+// @Description
+// @Tags					初始化
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Success 				200 			{object}	boolean
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/init			[get]
 func (api Start) IsInitialized(c *gin.Context) {
 	resp.Ok(isInitialized(), c)
 }
 
+// InitRequest 初始化系统参数
 type InitRequest struct {
-	Id       uint   `json:"id" binding:"required" description:"管理员ID"`
-	Username string `json:"username" binding:"required,username" description:"管理员用户名"`
-	Password string `json:"password" binding:"required,password" description:"管理员密码"`
-	RealName string `json:"realName" binding:"required,min=2,max=10" description:"管理员真实姓名"`
+	Id       uint   `json:"id" binding:"required" description:"管理员ID"`                      // 管理员ID
+	Username string `json:"username" binding:"required,username" description:"管理员用户名"`      // 管理员用户名
+	Password string `json:"password" binding:"required,password" description:"管理员密码"`       // 管理员密码
+	RealName string `json:"realName" binding:"required,min=2,max=10" description:"管理员真实姓名"` // 管理员真实姓名
 }
 
+// InitSystem
+// @Summary					初始化系统。
+// @Description
+// @Tags					初始化
+// @Accept					json
+// @Produce					json
+// @Param					params			body		InitRequest		true	"初始化信息"
+// @Security				ApiKeyAuth
+// @Success 				200 			{object}	boolean
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/init			[post]
 func (api Start) InitSystem(c *gin.Context) {
 	if isInitialized() {
 		resp.FailJust("系统已初始化", c)

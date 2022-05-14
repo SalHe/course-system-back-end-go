@@ -17,6 +17,16 @@ type LoginCredit struct {
 	Password string `json:"password" binding:"required,password" description:"密码"`
 }
 
+// Login
+// @Summary					登录。
+// @Description				登录。
+// @Tags					公共
+// @Accept					json
+// @Produce					json
+// @Param					params			body		LoginCredit		true	"登录凭据"
+// @Success 				200 			{object}	string
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/login		 	[post]
 func (api Public) Login(c *gin.Context) {
 	var loginCredit LoginCredit
 	if !req.BindAndValidate(c, &loginCredit) {
@@ -37,12 +47,24 @@ func (api Public) Login(c *gin.Context) {
 	return
 }
 
+type RegisterInfo struct {
+	Username string `json:"username" binding:"required,username" description:"用户名"`
+	Password string `json:"password" binding:"required,password" description:"密码"`
+	Id       uint   `json:"id"`
+}
+
+// Register
+// @Summary					注册。
+// @Description				注册。
+// @Tags					公共
+// @Accept					json
+// @Produce					json
+// @Param					params			body		RegisterInfo		true	"注册信息"
+// @Success 				200 			{object}	boolean
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/register		[post]
 func (api Public) Register(c *gin.Context) {
-	var b struct {
-		Username string `json:"username" binding:"required,username" description:"用户名"`
-		Password string `json:"password" binding:"required,password" description:"密码"`
-		Id       uint   `json:"id"`
-	}
+	var b RegisterInfo
 	if !req.BindAndValidate(c, &b) {
 		return
 	}

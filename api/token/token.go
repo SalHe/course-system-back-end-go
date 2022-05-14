@@ -12,6 +12,9 @@ import (
 	"github.com/se2022-qiaqia/course-system/dao"
 )
 
+// TODO 丰富claims
+// TODO 抽象token存储机制
+
 var (
 	tokenJwt = make(map[string]string)
 	jwtToken = make(map[string]string)

@@ -9,6 +9,16 @@ import (
 
 type College struct{}
 
+// ListColleges
+// @Summary					获取学院。
+// @Description				获取学院，可以根据关键字模糊查询。
+// @Tags					学院
+// @Accept					json
+// @Produce					json
+// @Param					queryFilter		body	services.QueryCollegesService	true	"查询条件"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} resp.College
+// @Router					/college/list [post]
 func (api College) ListColleges(c *gin.Context) {
 	var b services.QueryCollegesService
 	if !req.BindAndValidate(c, &b) {
@@ -24,6 +34,16 @@ func (api College) ListColleges(c *gin.Context) {
 	return
 }
 
+// NewCollege
+// @Summary					添加学院。
+// @Tags					学院
+// @Accept					json
+// @Produce					json
+// @Param					new				body		services.QueryCollegesService	true	"新学院信息"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} 	resp.College
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/college/new 	[post]
 func (api College) NewCollege(c *gin.Context) {
 	var b services.NewCollegeService
 	if !req.BindAndValidate(c, &b) {

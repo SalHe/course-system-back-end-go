@@ -42,7 +42,7 @@ func (api Start) InitSystem(c *gin.Context) {
 	}
 
 	err := S.Services.Start.InitSystem(b)
-	if err != nil {
+	if err == nil {
 		resp.Ok(true, c)
 		return
 	} else if errors.Is(err, S.ErrConflict) {

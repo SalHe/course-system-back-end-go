@@ -64,7 +64,7 @@ func (u User) DeleteUser(id uint) error {
 
 func (u User) UpdateUser(id uint, b req.UpdateUserRequest) (*resp.User, error) {
 	var user dao.User
-	if err := dao.DB.Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
+	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 

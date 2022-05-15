@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
-	"github.com/se2022-qiaqia/course-system/services"
+	S "github.com/se2022-qiaqia/course-system/services"
 )
 
 type College struct{}
@@ -15,17 +15,17 @@ type College struct{}
 // @Tags					学院
 // @Accept					json
 // @Produce					json
-// @Param					queryFilter		body	services.QueryCollegesService	true	"查询条件"
+// @Param					queryFilter		body	req.QueryCollegesService	true	"查询条件"
 // @Security				ApiKeyAuth
 // @Success 				200 			{array} resp.College
 // @Router					/college/list [post]
 func (api College) ListColleges(c *gin.Context) {
-	var b services.QueryCollegesService
+	var b req.QueryCollegesService
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	results := b.Query()
+	results := S.Services.College.Query(b)
 	actual := make([]*resp.College, len(results))
 	for i, result := range results {
 		actual[i] = resp.NewCollege(&result)
@@ -39,18 +39,18 @@ func (api College) ListColleges(c *gin.Context) {
 // @Tags					学院
 // @Accept					json
 // @Produce					json
-// @Param					new				body		services.QueryCollegesService	true	"新学院信息"
+// @Param					new				body		req.QueryCollegesService	true	"新学院信息"
 // @Security				ApiKeyAuth
 // @Success 				200 			{array} 	resp.College
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/college/new 	[post]
 func (api College) NewCollege(c *gin.Context) {
-	var b services.NewCollegeService
+	var b req.NewCollegeService
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	if college, err := b.NewCollege(); err != nil {
+	if college, err := S.Services.College.NewCollege(b); err != nil {
 		resp.FailJust("创建失败", c)
 		return
 	} else {

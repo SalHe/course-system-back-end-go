@@ -4,18 +4,13 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/api/token"
-	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
+	S "github.com/se2022-qiaqia/course-system/services"
 	"gorm.io/gorm"
 )
 
 type Public struct{}
-
-type LoginCredit struct {
-	Username string `json:"username" binding:"required,username" description:"用户名"`
-	Password string `json:"password" binding:"required,password" description:"密码"`
-}
 
 // Login
 // @Summary					登录。
@@ -23,34 +18,29 @@ type LoginCredit struct {
 // @Tags					公共
 // @Accept					json
 // @Produce					json
-// @Param					params			body		LoginCredit		true	"登录凭据"
+// @Param					params			body		req.LoginCredit		true	"登录凭据"
 // @Success 				200 			{object}	string
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/login		 	[post]
 func (api Public) Login(c *gin.Context) {
-	var loginCredit LoginCredit
-	if !req.BindAndValidate(c, &loginCredit) {
+	var credit req.LoginCredit
+	if !req.BindAndValidate(c, &credit) {
 		return
 	}
 
-	var user *dao.User
-	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ?", loginCredit.Username, loginCredit.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		resp.Fail(resp.ErrCodeNotFound, "找不到对应用户", c)
-		return
-	}
-
-	if user.ComparePassword(loginCredit.Password) {
+	user, err := S.Services.Public.Login(credit)
+	if err == nil {
 		resp.Ok(token.NewToken(user), c)
 		return
+	} else if errors.Is(err, S.ErrNotFound) || errors.Is(err, gorm.ErrRecordNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, "找不到对应用户", c)
+		return
+	} else if errors.Is(err, S.ErrWrongPassword) {
+		resp.Fail(resp.ErrCodeUnauthorized, "密码错误", c)
+		return
 	}
-	resp.Fail(resp.ErrCodeUnauthorized, "用户不存在或密码错误", c)
+	resp.FailJust("登录失败", c)
 	return
-}
-
-type RegisterInfo struct {
-	Username string `json:"username" binding:"required,username" description:"用户名"`
-	Password string `json:"password" binding:"required,password" description:"密码"`
-	Id       uint   `json:"id"`
 }
 
 // Register
@@ -59,33 +49,25 @@ type RegisterInfo struct {
 // @Tags					公共
 // @Accept					json
 // @Produce					json
-// @Param					params			body		RegisterInfo		true	"注册信息"
+// @Param					params			body		req.RegisterInfo		true	"注册信息"
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/register		[post]
 func (api Public) Register(c *gin.Context) {
-	var b RegisterInfo
+	var b req.RegisterInfo
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	var user dao.User
-	if err := dao.DB.Unscoped().Model(&dao.User{}).Where("id = ? OR username = ?", b.Id, b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		user = dao.User{
-			Model: dao.Model{
-				ID: b.Id,
-			},
-			Username: b.Username,
-		}
-		user.SetPassword(b.Password)
-		if err = dao.DB.Create(&user).Error; err != nil {
-			resp.FailJust("注册失败！", c)
-			return
-		}
-		resp.Ok(true, c)
+	ok, err := S.Services.Public.Register(b)
+	if err == nil {
+		resp.Ok(ok, c)
+		return
+	} else if errors.Is(err, S.ErrConflict) {
+		resp.Fail(resp.ErrCodeNotFound, "用户已存在", c)
 		return
 	} else {
-		resp.Fail(resp.ErrCodeConflict, "用户已存在", c)
+		resp.FailJust("注册失败", c)
 		return
 	}
 }

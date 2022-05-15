@@ -1,0 +1,81 @@
+package req
+
+import (
+	"github.com/se2022-qiaqia/course-system/dao"
+)
+
+type LoginCredit struct {
+	Username string `json:"username" binding:"required,username" description:"用户名"`
+	Password string `json:"password" binding:"required,password" description:"密码"`
+}
+
+type RegisterInfo struct {
+	Username string `json:"username" binding:"required,username" description:"用户名"`
+	Password string `json:"password" binding:"required,password" description:"密码"`
+	Id       uint   `json:"id"`
+}
+
+// InitRequest 初始化系统参数
+type InitRequest struct {
+	Id       uint   `json:"id" binding:"required" description:"管理员ID"`                      // 管理员ID
+	Username string `json:"username" binding:"required,username" description:"管理员用户名"`      // 管理员用户名
+	Password string `json:"password" binding:"required,password" description:"管理员密码"`       // 管理员密码
+	RealName string `json:"realName" binding:"required,min=2,max=10" description:"管理员真实姓名"` // 管理员真实姓名
+}
+
+// NewUserRequest 新增用户信息
+type NewUserRequest struct {
+	Id           uint     `json:"id" binding:"required"`                                          // 用户id
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`         // 用户名
+	Password     string   `json:"password" binding:"required,password" description:"密码"`          // 密码
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`    // 真实姓名
+	CollegeId    uint     `json:"collegeId" binding:"required" description:"学院id"`                // 学院id
+	Role         dao.Role `json:"role" description:"角色"`                                          // 角色
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"` // 入学/入职年份
+}
+
+// UpdateUserRequest 更新用户信息
+type UpdateUserRequest struct {
+	Username     string   `json:"username" binding:"required,username" description:"用户名"`         // 用户名
+	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`    // 真实姓名
+	CollegeId    uint     `json:"collegeId" binding:"required,min=1" description:"学院id"`          // 学院id
+	Role         dao.Role `json:"role" binding:"required" description:"角色"`                       // 角色
+	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"` // 入学/入职年份
+}
+
+// QueryCoursesRequest 查询课程列表
+type QueryCoursesRequest struct {
+	Page
+	Name        string `json:"name" description:"课程名称"`          // 课程名称
+	Semester    uint   `json:"semester" description:"学期"`        // 学期id
+	TeacherName string `json:"teacherName" description:"教师名称"`   // 教师名称
+	CollegesId  []uint `json:"collegesId" description:"包含的学院id"` // 包含的学院id
+}
+
+// NewCourseRequest 新增课程，对应于课程的公共信息部分。
+type NewCourseRequest struct {
+	Name      string  `json:"name" description:"课程名称"`      // 课程名称
+	CollegeId uint    `json:"collegeId" description:"学院id"` // 学院id
+	Credits   float32 `json:"credits" description:"学分"`     // 学分
+	Hours     uint    `json:"hours" description:"学时"`       // 学时
+}
+
+// OpenCourseRequest 开设课头。
+type OpenCourseRequest struct {
+	CourseCommonId  uint                  `json:"courseCommonId" description:"课程id"`  // 课程id
+	SemesterId      uint                  `json:"semesterId" description:"学期id"`      // 学期id
+	TeacherId       uint                  `json:"teacherId" description:"教师id"`       // 教师id
+	Location        string                `json:"location" description:"上课地点"`        // 上课地点
+	Quota           uint                  `json:"quota" description:"容量"`             // 容量
+	CourseSchedules []*dao.CourseSchedule `json:"courseSchedules" description:"上课时间"` // 上课时间
+}
+
+// NewCollegeService 新学院信息
+type NewCollegeService struct {
+	Name string `json:"name" description:"学院名称"` // 学院名称
+}
+
+// QueryCollegesService 查询学院信息的筛选条件
+type QueryCollegesService struct {
+	Name string `json:"name" description:"学院名称"` // 学院名称，将会模糊搜索
+}

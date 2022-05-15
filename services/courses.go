@@ -2,19 +2,13 @@ package services
 
 import (
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/model/req"
 	"gorm.io/gorm/clause"
 )
 
-// QueryCoursesServices 查询课程列表
-type QueryCoursesServices struct {
-	Page
-	Name        string `json:"name" description:"课程名称"`          // 课程名称
-	Semester    uint   `json:"semester" description:"学期"`        // 学期id
-	TeacherName string `json:"teacherName" description:"教师名称"`   // 教师名称
-	CollegesId  []uint `json:"collegesId" description:"包含的学院id"` // 包含的学院id
-}
+type Course struct{}
 
-func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err error) {
+func (c Course) Query(q req.QueryCoursesRequest) (courseCommons []*dao.CourseCommon, err error) {
 	db := dao.DB.Preload("CourseSpecifics").Preload("College").Model(&dao.CourseCommon{})
 	if len(q.Name) > 0 {
 		db = db.Where("name like (?)", "%"+q.Name+"%")
@@ -42,15 +36,7 @@ func (q QueryCoursesServices) Query() (courseCommons []*dao.CourseCommon, err er
 	return
 }
 
-// NewCourseService 新增课程，对应于课程的公共信息部分。
-type NewCourseService struct {
-	Name      string  `json:"name" description:"课程名称"`      // 课程名称
-	CollegeId uint    `json:"collegeId" description:"学院id"` // 学院id
-	Credits   float32 `json:"credits" description:"学分"`     // 学分
-	Hours     uint    `json:"hours" description:"学时"`       // 学时
-}
-
-func (n NewCourseService) NewCourse() (courseCommon *dao.CourseCommon, err error) {
+func (c Course) NewCourse(n req.NewCourseRequest) (courseCommon *dao.CourseCommon, err error) {
 	courseCommon = &dao.CourseCommon{
 		Name:      n.Name,
 		Credits:   n.Credits,
@@ -64,17 +50,7 @@ func (n NewCourseService) NewCourse() (courseCommon *dao.CourseCommon, err error
 	return
 }
 
-// OpenCourseService 开设课头。
-type OpenCourseService struct {
-	CourseCommonId  uint                  `json:"courseCommonId" description:"课程id"`  // 课程id
-	SemesterId      uint                  `json:"semesterId" description:"学期id"`      // 学期id
-	TeacherId       uint                  `json:"teacherId" description:"教师id"`       // 教师id
-	Location        string                `json:"location" description:"上课地点"`        // 上课地点
-	Quota           uint                  `json:"quota" description:"容量"`             // 容量
-	CourseSchedules []*dao.CourseSchedule `json:"courseSchedules" description:"上课时间"` // 上课时间
-}
-
-func (o OpenCourseService) OpenCourse() (course dao.CourseSpecific, err error) {
+func (c Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, err error) {
 	course = dao.CourseSpecific{
 		CourseCommonId:  o.CourseCommonId,
 		TeacherId:       o.TeacherId,

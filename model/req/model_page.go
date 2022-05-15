@@ -1,4 +1,4 @@
-package services
+package req
 
 // Page 分页信息
 type Page struct {

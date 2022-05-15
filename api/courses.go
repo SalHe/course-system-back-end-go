@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
-	"github.com/se2022-qiaqia/course-system/services"
+	S "github.com/se2022-qiaqia/course-system/services"
 )
 
 type Course struct{}
@@ -15,18 +15,18 @@ type Course struct{}
 // @Tags					课程
 // @Accept					json
 // @Produce					json
-// @Param					params			body		services.QueryCoursesServices	true	"筛选条件"
+// @Param					params			body		req.QueryCoursesRequest	true	"筛选条件"
 // @Security				ApiKeyAuth
 // @Success 				200 			{array} 	resp.CourseCommonWithSpecifics
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/list 	[post]
 func (api Course) GetCourseList(c *gin.Context) {
-	var b services.QueryCoursesServices
+	var b req.QueryCoursesRequest
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	if courseCommons, err := b.Query(); err != nil {
+	if courseCommons, err := S.Services.Course.Query(b); err != nil {
 		resp.FailJust("查询失败", c)
 		return
 	} else {
@@ -45,18 +45,18 @@ func (api Course) GetCourseList(c *gin.Context) {
 // @Tags					课程
 // @Accept					json
 // @Produce					json
-// @Param					params			body		services.NewCourseService	true	"课程信息"
+// @Param					params			body		req.NewCourseRequest	true	"课程信息"
 // @Security				ApiKeyAuth
 // @Success 				200 			{object} 	resp.CourseCommon
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course		 	[post]
 func (api Course) NewCourse(c *gin.Context) {
-	var b services.NewCourseService
+	var b req.NewCourseRequest
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	if courseCommon, err := b.NewCourse(); err != nil {
+	if courseCommon, err := S.Services.Course.NewCourse(b); err != nil {
 		resp.FailJust("创建失败", c)
 		return
 	} else {
@@ -71,18 +71,18 @@ func (api Course) NewCourse(c *gin.Context) {
 // @Tags					课程
 // @Accept					json
 // @Produce					json
-// @Param					params			body		services.OpenCourseService	true	"课程信息"
+// @Param					params			body		req.OpenCourseRequest	true	"课程信息"
 // @Security				ApiKeyAuth
 // @Success 				200 			{object} 	resp.CourseSpecific
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/open	[post]
 func (api Course) OpenCourse(c *gin.Context) {
-	var b services.OpenCourseService
+	var b req.OpenCourseRequest
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	if course, err := b.OpenCourse(); err != nil {
+	if course, err := S.Services.Course.OpenCourse(b); err != nil {
 		resp.FailJust("开课失败", c)
 		return
 	} else {

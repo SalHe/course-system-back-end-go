@@ -51,6 +51,14 @@ func (c Course) NewCourse(n req.NewCourseRequest) (courseCommon *dao.CourseCommo
 }
 
 func (c Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, err error) {
+	var schedules []*dao.CourseSchedule
+	for _, s := range o.CourseSchedules {
+		schedules = append(schedules, &dao.CourseSchedule{
+			DayOfWeek: s.DayOfWeek,
+			HoursId:   s.HoursId,
+		})
+	}
+
 	course = dao.CourseSpecific{
 		CourseCommonId:  o.CourseCommonId,
 		TeacherId:       o.TeacherId,
@@ -58,7 +66,7 @@ func (c Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, 
 		Quota:           o.Quota,
 		QuotaUsed:       0,
 		SemesterId:      o.SemesterId,
-		CourseSchedules: o.CourseSchedules,
+		CourseSchedules: schedules,
 	}
 	err = dao.DB.Create(&course).Error
 	if err == nil {

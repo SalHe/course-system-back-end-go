@@ -5,12 +5,13 @@ import (
 	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Public struct{}
 
 func (p Public) Login(l req.LoginCredit) (user *dao.User, err error) {
-	if err = dao.DB.Model(&dao.User{}).Where("id = ? OR username = ?", l.Username, l.Username).First(&user).Error; err != nil {
+	if err = dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ? OR username = ?", l.Username, l.Username).First(&user).Error; err != nil {
 		return nil, err
 	}
 

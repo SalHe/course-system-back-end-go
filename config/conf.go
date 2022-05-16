@@ -20,8 +20,17 @@ type Database struct {
 	Sqlite *Sqlite `yaml:"sqlite"`
 }
 
+type InMemory struct {
+	File string `yaml:"file"`
+}
+
+type TokenStorage struct {
+	InMemory *InMemory `yaml:"in-memory"`
+}
+
 type Token struct {
-	SignKey string `yaml:"sign-key"`
+	SignKey string       `yaml:"sign-key"`
+	Storage TokenStorage `yaml:"storage"`
 }
 
 type RootConfig struct {

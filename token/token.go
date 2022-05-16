@@ -5,28 +5,35 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"sync"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
 )
 
-// TODO 丰富claims
-// TODO 抽象token存储机制
-
 var (
-	tokenJwt = make(map[string]string)
-	jwtToken = make(map[string]string)
-	mux      = &sync.Mutex{}
-
 	signMethod = jwt.SigningMethodHS512
 )
 
+var tokenStorage TokenStorage
+
 type JwtClaims struct {
 	jwt.StandardClaims
-	Role     uint   `json:"role"`
-	Username string `json:"username"`
+	*dao.User
+}
+
+func Init() {
+	tokenConf := config.Config.Token
+	if tokenConf.Storage.InMemory != nil {
+		tokenStorage = NewInMemoryTokenStorage()
+		tokenStorage.(*InMemoryTokenStorage).Load(tokenConf.Storage.InMemory.File, false)
+	}
+}
+
+func WhenExit() {
+	if ts, ok := tokenStorage.(*InMemoryTokenStorage); ok {
+		ts.Save(config.Config.Token.Storage.InMemory.File)
+	}
 }
 
 func NewJwt(user *dao.User) string {
@@ -34,8 +41,7 @@ func NewJwt(user *dao.User) string {
 		StandardClaims: jwt.StandardClaims{
 			Id: strconv.Itoa(int(user.ID)),
 		},
-		Username: user.Username,
-		Role:     user.Role,
+		User: user,
 	}).SignedString([]byte(config.Config.Token.SignKey))
 	if err != nil {
 		if errors.Is(err, jwt.ErrInvalidKey) {
@@ -46,25 +52,10 @@ func NewJwt(user *dao.User) string {
 	return signingString
 }
 
-func saveToken(token string, jwt string) {
-	mux.Lock()
-	defer mux.Unlock()
-
-	tokenJwt[token] = jwt
-}
-
-func getJwt(token string) (string, bool) {
-	mux.Lock()
-	defer mux.Unlock()
-
-	jwt2, ok := tokenJwt[token]
-	return jwt2, ok
-}
-
 func NewToken(user *dao.User) string {
 	newJwt := NewJwt(user)
 	token := FromJwt(newJwt)
-	saveToken(token, newJwt)
+	tokenStorage.Set(token, newJwt)
 	return token
 }
 
@@ -74,28 +65,9 @@ func md5Hash(content string) string {
 	return fmt.Sprintf("%x", token)
 }
 
-func saveJwt(jwt string, token string) {
-	mux.Lock()
-	defer mux.Unlock()
-	jwtToken[jwt] = token
-}
-
-func getToken(jwt string) (string, bool) {
-	mux.Lock()
-	defer mux.Unlock()
-
-	s, b := jwtToken[jwt]
-	return s, b
-}
-
 func FromJwt(jwt string) string {
-	if s, found := getToken(jwt); found {
-		return s
-	} else {
-		token := md5Hash(jwt)
-		saveJwt(jwt, token)
-		return token
-	}
+	token := md5Hash(jwt)
+	return token
 }
 
 func ClaimsFromJwt(jwtString string) *JwtClaims {
@@ -112,7 +84,7 @@ func ClaimsFromJwt(jwtString string) *JwtClaims {
 }
 
 func ToClaims(token string) *JwtClaims {
-	jwt2, _ := getJwt(token)
+	jwt2, _ := tokenStorage.Get(token)
 	return ClaimsFromJwt(jwt2)
 }
 

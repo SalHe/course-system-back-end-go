@@ -3,10 +3,10 @@ package api
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/api/token"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
+	"github.com/se2022-qiaqia/course-system/token"
 	"gorm.io/gorm"
 )
 

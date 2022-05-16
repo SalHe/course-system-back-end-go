@@ -6,3 +6,6 @@ database:
     filename: test.db
 token:
   sign-key: SDjhbdsfyg#@&IsaSDJHBVHJSGyeqgwjdhasvdyfGUYWGEYjg2VJWU3jqy2bheqwdsuyTUWYEGJj3h432byjtasbhdhasuye32y4ebwmasdasgdkSDUIHKSsaduiq23SDBVHadjfvbjyg3u4t1i4u1yI#$Y@Ubsadasmnbdhbsad
+  storage:
+    in-memory:
+      file: tokens.json

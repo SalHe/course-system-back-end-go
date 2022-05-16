@@ -1,14 +1,21 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
 	docs "github.com/se2022-qiaqia/course-system/docs/swagger"
 	"github.com/se2022-qiaqia/course-system/log"
 	"github.com/se2022-qiaqia/course-system/router"
+	"github.com/se2022-qiaqia/course-system/token"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 //go:generate swag init -o docs/swagger
@@ -31,12 +38,51 @@ import (
 
 func main() {
 	config.Init()
+
+	token.Init()
+	defer token.WhenExit()
+
 	dao.Init()
 	dao.Migrate()
 
 	// 引用一下，不然不会生成swagger文档
 	docs.SwaggerInfo.InstanceName()
 
+	server := createServer()
+	runServer(server)
+
+	// 设置可控退出逻辑
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		log.Logger.Fatalln(err)
+	}
+
+	log.Logger.Println("正在关闭服务器...")
+	select {
+	case <-ctx.Done():
+		log.Logger.Println("已关闭服务器.")
+	}
+	log.Logger.Println("See you.")
+
+}
+
+func runServer(server *http.Server) {
+	go func() {
+		// _ = r.Run(fmt.Sprintf(":%d", config.Config.Server.Port))
+		log.Logger.Println("服务将运行于：", server.Addr)
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Logger.Fatalln(err)
+		}
+	}()
+}
+
+func createServer() *http.Server {
 	r := router.NewRouter()
 	r.GET("/swagger/*any",
 		ginSwagger.WrapHandler(
@@ -44,7 +90,10 @@ func main() {
 			ginSwagger.PersistAuthorization(true),
 		),
 	)
-	_ = r.Run(fmt.Sprintf(":%d", config.Config.Server.Port))
 
-	log.Logger.Printf("Server is running on port %d\n", config.Config.Server.Port)
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%d", config.Config.Server.Port),
+		Handler: r,
+	}
+	return server
 }

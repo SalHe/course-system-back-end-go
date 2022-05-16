@@ -62,7 +62,7 @@ func (u User) DeleteUser(id uint) error {
 	return nil
 }
 
-func (u User) UpdateUser(id uint, b req.UpdateUserRequest) (*resp.User, error) {
+func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool) (*resp.User, error) {
 	var user dao.User
 	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
@@ -72,12 +72,25 @@ func (u User) UpdateUser(id uint, b req.UpdateUserRequest) (*resp.User, error) {
 	oldUserInfo := resp.NewUser(&user)
 
 	user.Username = b.Username
-	user.RealName = b.RealName
-	user.Role = b.Role
-	user.CollegeId = b.CollegeId
-	user.EntranceYear = b.EntranceYear
+	if operatedByAdmin {
+		// 目前个人只允许修改用户名
+		user.RealName = b.RealName
+		user.Role = b.Role
+		user.CollegeId = b.CollegeId
+		user.EntranceYear = b.EntranceYear
+	}
 	if err := dao.DB.Save(&user).Error; err != nil {
 		return nil, err
 	}
 	return oldUserInfo, nil
+}
+
+func (u User) UpdatePassword(id uint, pwd req.UpdateUserPassword) error {
+	var user dao.User
+	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
+		return err
+	}
+	user.SetPassword(pwd.Password)
+	dao.DB.Save(&user)
+	return nil
 }

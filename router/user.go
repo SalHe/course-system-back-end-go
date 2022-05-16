@@ -17,13 +17,16 @@ func (s User) Init(Router *gin.RouterGroup) {
 	privateRouter.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
 
 	{
-		publicRouter.GET("/info", api.Api.User.GetUserInfo)
+		publicRouter.GET("", api.Api.User.GetUserInfo)
+		publicRouter.POST("", api.Api.User.UpdateSelfInfo)
+		publicRouter.POST("/pwd", api.Api.User.UpdatePassword)
 	}
 	{
 		privateRouter.GET("/list/:page/:size", api.Api.User.GetUserList)
 		privateRouter.GET("/:id", api.Api.User.GetOtherUserInfo)
-		privateRouter.POST("/:id", api.Api.User.UpdateUser)
+		privateRouter.POST("/:id", api.Api.User.UpdateUserInfo)
 		privateRouter.DELETE("/:id", api.Api.User.DeleteUser)
 		privateRouter.POST("/new", api.Api.User.NewUser)
+		publicRouter.POST("/:id/pwd", api.Api.User.UpdatePassword)
 	}
 }

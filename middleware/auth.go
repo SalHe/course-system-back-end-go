@@ -8,8 +8,11 @@ import (
 	"strings"
 )
 
-const bearerString = "Bearer"
-const ClaimsKey = "claims"
+const (
+	bearerString = "Bearer"
+	ClaimsKey    = "claims"
+	TokenKey     = "token"
+)
 
 func GetClaims(c *gin.Context) *token.JwtClaims {
 	if claims, exists := c.Get(ClaimsKey); exists {
@@ -24,6 +27,7 @@ func Authorize(context *gin.Context) {
 	if len(bearer) >= 2 && bearer[0] == bearerString {
 		t := bearer[1]
 		claims := token.ToClaims(t)
+		context.Set(TokenKey, t)
 		context.Set(ClaimsKey, claims)
 	}
 	context.Next()

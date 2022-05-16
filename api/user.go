@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/middleware"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
@@ -22,9 +23,9 @@ type User struct{}
 // @Security				ApiKeyAuth
 // @Success 				200 			{object}	resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
-// @Router					/user/info		[get]
+// @Router					/user		[get]
 func (api User) GetUserInfo(c *gin.Context) {
-	cla, _ := c.Get("claims")
+	cla, _ := c.Get(middleware.ClaimsKey)
 	claims := cla.(*token.JwtClaims)
 	resp.Ok(resp.NewUser(claims.User), c)
 }
@@ -142,7 +143,37 @@ func (api User) DeleteUser(c *gin.Context) {
 	}
 }
 
-// UpdateUser
+// UpdateSelfInfo
+// @Summary					更新用户信息。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					info 			body		req.UpdateUserRequest			true		"新用户信息"
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user [post]
+func (api User) UpdateSelfInfo(c *gin.Context) {
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+	id := claims.ID
+	var b req.UpdateUserRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	oldUser, err := S.Services.User.UpdateUser(id, b, claims.IsAdmin())
+	if err == nil {
+		resp.Ok(oldUser, c)
+		return
+	} else {
+		resp.Fail(resp.ErrCodeInternal, "更新个人信息失败", c)
+		return
+	}
+}
+
+// UpdateUserInfo
 // @Summary					更新任意用户信息。
 // @Description
 // @Tags					用户
@@ -154,14 +185,14 @@ func (api User) DeleteUser(c *gin.Context) {
 // @Success 				200 			{object}	resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[post]
-func (api User) UpdateUser(c *gin.Context) {
+func (api User) UpdateUserInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var b req.UpdateUserRequest
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	oldUser, err := S.Services.User.UpdateUser(uint(id), b)
+	oldUser, err := S.Services.User.UpdateUser(uint(id), b, true)
 	if err == nil {
 		resp.Ok(oldUser, c)
 		return
@@ -170,6 +201,59 @@ func (api User) UpdateUser(c *gin.Context) {
 		return
 	} else {
 		resp.Fail(resp.ErrCodeInternal, "更新用户失败", c)
+		return
+	}
+}
+
+// UpdatePassword
+// @Summary					更新用户密码。
+// @Description
+// @Tags					用户
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Param					id				path		int								false		"用户id"
+// @Param					info 			body		req.UpdateUserPassword			true		"新用户信息"
+// @Success 				200 			{object}	resp.User
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/user/pwd [post]
+// @Router					/user/{id}/pwd [post]
+func (api User) UpdatePassword(c *gin.Context) {
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+
+	idString, hasId := c.Params.Get("id")
+	i, _ := strconv.Atoi(idString)
+
+	// 确定一下被修改的用户ID
+	id := uint(i)                             // 路径参数里指定的用户ID
+	curToken, _ := c.Get(middleware.TokenKey) // 当前登录的用户token
+	if hasId {
+		if !claims.IsAdmin() {
+			// 正常来说不会给普通用户授权，但是这里还是判断下，防止写错
+			resp.Fail(resp.ErrCodeUnauthorized, "还是不要乱改别人密码哟~", c)
+			return
+		}
+		curToken = "" // TODO 找到被修改用户的token，在后面将其从tokenStorage中删除（登出）
+	} else {
+		id = claims.User.ID
+	}
+
+	var b req.UpdateUserPassword
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	err := S.Services.User.UpdatePassword(id, b)
+	if err == nil {
+		token.Storage.Delete(curToken.(string))
+		resp.Ok(true, c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.FailJust("未找到对应用户", c)
+		return
+	} else {
+		resp.FailJust("修改失败", c)
 		return
 	}
 }

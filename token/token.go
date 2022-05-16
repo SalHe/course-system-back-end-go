@@ -15,7 +15,7 @@ var (
 	signMethod = jwt.SigningMethodHS512
 )
 
-var tokenStorage TokenStorage
+var Storage TokenStorage
 
 type JwtClaims struct {
 	jwt.StandardClaims
@@ -25,13 +25,13 @@ type JwtClaims struct {
 func Init() {
 	tokenConf := config.Config.Token
 	if tokenConf.Storage.InMemory != nil {
-		tokenStorage = NewInMemoryTokenStorage()
-		tokenStorage.(*InMemoryTokenStorage).Load(tokenConf.Storage.InMemory.File, false)
+		Storage = NewInMemoryTokenStorage()
+		Storage.(*InMemoryTokenStorage).Load(tokenConf.Storage.InMemory.File, false)
 	}
 }
 
 func WhenExit() {
-	if ts, ok := tokenStorage.(*InMemoryTokenStorage); ok {
+	if ts, ok := Storage.(*InMemoryTokenStorage); ok {
 		ts.Save(config.Config.Token.Storage.InMemory.File)
 	}
 }
@@ -55,7 +55,7 @@ func NewJwt(user *dao.User) string {
 func NewToken(user *dao.User) string {
 	newJwt := NewJwt(user)
 	token := FromJwt(newJwt)
-	tokenStorage.Set(token, newJwt)
+	Storage.Set(token, newJwt)
 	return token
 }
 
@@ -84,7 +84,7 @@ func ClaimsFromJwt(jwtString string) *JwtClaims {
 }
 
 func ToClaims(token string) *JwtClaims {
-	jwt2, _ := tokenStorage.Get(token)
+	jwt2, _ := Storage.Get(token)
 	return ClaimsFromJwt(jwt2)
 }
 

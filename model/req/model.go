@@ -82,5 +82,5 @@ type NewCollegeService struct {
 
 // QueryCollegesService 查询学院信息的筛选条件
 type QueryCollegesService struct {
-	Name string `json:"name" binding:"required" description:"学院名称"` // 学院名称，将会模糊搜索
+	Name string `json:"name" description:"学院名称"` // 学院名称，将会模糊搜索
 }

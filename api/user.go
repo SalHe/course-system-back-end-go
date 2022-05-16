@@ -93,14 +93,14 @@ func (api User) NewUser(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Param					page 			path 		int			false		"页码"
-// @Param					size 			path 		int			false		"每页数量"
+// @Param					page 			query 		int			false		"页码"
+// @Param					size 			query 		int			false		"每页数量"
 // @Success 				200 			{array}		resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
-// @Router					/user/list/{page}/{size}		[get]
+// @Router					/user/list		[get]
 func (api User) GetUserList(c *gin.Context) {
-	page, _ := strconv.Atoi(c.Param("page"))
-	size, _ := strconv.Atoi(c.Param("size"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	size, _ := strconv.Atoi(c.DefaultQuery("size", "10"))
 
 	users, err := S.Services.User.GetUserList(req.Page{Page: page, Size: size})
 	if err == nil {

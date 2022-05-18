@@ -7,8 +7,7 @@ import (
 	"github.com/se2022-qiaqia/course-system/model/req"
 )
 
-func NewRouter() *gin.Engine {
-	engine := gin.Default()
+func NewRouter(engine *gin.Engine) *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 	if !config.Config.Debug {
 		gin.SetMode(gin.ReleaseMode)

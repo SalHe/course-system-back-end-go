@@ -2,10 +2,10 @@ package dao
 
 import (
 	"github.com/se2022-qiaqia/course-system/config"
+	"github.com/se2022-qiaqia/course-system/log"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"time"
 )
 
@@ -35,13 +35,13 @@ func Init() {
 	default:
 		panic("未正确配置数据库!")
 	}
-	if db, err := gorm.Open(dialector, &gorm.Config{}); err != nil {
+
+	if db, err := gorm.Open(dialector, &gorm.Config{Logger: &gormZeroLogger{Logger: log.L}}); err != nil {
 		panic("连接数据库失败")
 	} else {
 		DB = db
 	}
 	if config.Config.Debug {
-		DB.Logger.LogMode(logger.Info)
 		DB = DB.Debug()
 	}
 }

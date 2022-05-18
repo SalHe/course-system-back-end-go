@@ -75,10 +75,12 @@ func initTranslation(validate *validator.Validate) {
 	translator, _ = uni.GetTranslator("zh")
 	err := zh.RegisterDefaultTranslations(validate, translator)
 	if err != nil {
-		log.Logger.Fatalln("初始化验证器失败")
+		log.L.Fatal().
+			Err(err).
+			Msg("初始化验证器失败")
 		return
 	}
-	log.Logger.Println("初始化验证器成功")
+	log.L.Info().Msg("初始化验证器成功")
 	return
 }
 

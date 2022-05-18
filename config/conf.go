@@ -1,7 +1,8 @@
 package config
 
 import (
-	"github.com/se2022-qiaqia/course-system/log"
+	"github.com/rs/zerolog/log"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
@@ -33,8 +34,15 @@ type Token struct {
 	Storage TokenStorage `yaml:"storage"`
 }
 
+type Log struct {
+	Level   string             `yaml:"level"`
+	Console bool               `yaml:"console"`
+	Logger  *lumberjack.Logger `yaml:"logger"`
+}
+
 type RootConfig struct {
 	Debug    bool     `yaml:"debug"`
+	Log      Log      `yaml:"log"`
 	Server   Server   `yaml:"server"`
 	Database Database `yaml:"database"`
 	Token    Token    `yaml:"token"`
@@ -44,11 +52,11 @@ func Init() {
 	var bytes []byte
 	var err error
 	if bytes, err = ioutil.ReadFile("./config.yml"); err != nil {
-		log.Logger.Fatalln("读取配置文件失败!")
+		log.Error().Err(err).Msg("读取配置文件失败!")
 		return
 	}
 	if err = yaml.Unmarshal(bytes, &Config); err != nil {
-		log.Logger.Fatalln("读取配置出错!")
+		log.Error().Err(err).Msg("解析配置文件失败!")
 		return
 	}
 }

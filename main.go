@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
 	docs "github.com/se2022-qiaqia/course-system/docs/swagger"
 	"github.com/se2022-qiaqia/course-system/log"
+	"github.com/se2022-qiaqia/course-system/middleware"
 	"github.com/se2022-qiaqia/course-system/router"
 	"github.com/se2022-qiaqia/course-system/token"
 	swaggerFiles "github.com/swaggo/files"
@@ -38,6 +40,7 @@ import (
 
 func main() {
 	config.Init()
+	log.Init()
 
 	token.Init()
 	defer token.WhenExit()
@@ -60,30 +63,39 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		log.Logger.Fatalln(err)
+		log.L.Error().Err(err).Msg("关闭服务器出错")
 	}
 
-	log.Logger.Println("正在关闭服务器...")
+	log.L.Info().Msg("正在关闭服务器...")
 	select {
 	case <-ctx.Done():
-		log.Logger.Println("已关闭服务器.")
+		log.L.Info().Msg("已关闭服务器")
 	}
-	log.Logger.Println("See you.")
+	log.L.Info().Msg("See you.")
 
 }
 
 func runServer(server *http.Server) {
 	go func() {
 		// _ = r.Run(fmt.Sprintf(":%d", config.Config.Server.Port))
-		log.Logger.Println("服务将运行于：", server.Addr)
+		log.L.Info().
+			Str("addr", server.Addr).
+			Msg("服务将运行")
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Logger.Fatalln(err)
+			log.L.Fatal().Err(err).Msg("服务器启动失败")
 		}
 	}()
 }
 
 func createServer() *http.Server {
-	r := router.NewRouter()
+	baseEngine := gin.New()
+
+	logger := log.L
+	baseEngine.Use(middleware.LoggerWithZerolog(logger))
+	baseEngine.Use(middleware.RecoveryWithZerolog(logger, true))
+
+	r := router.NewRouter(baseEngine)
+
 	r.GET("/swagger/*any",
 		ginSwagger.WrapHandler(
 			swaggerFiles.Handler,

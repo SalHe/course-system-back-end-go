@@ -1,6 +1,12 @@
 debug: true
 server:
   port: 8080
+log:
+  level: debug
+  console: true
+  logger:
+    filename: .log/course-system.log
+    maxsize: 10
 database:
   sqlite:
     filename: test.db

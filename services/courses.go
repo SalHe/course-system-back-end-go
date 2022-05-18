@@ -122,8 +122,6 @@ func (c Course) UpdateCourseSpecific(u uint, b req.UpdateCourseSpecificRequest) 
 	course.Location = b.Location
 	course.Quota = b.Quota
 
-	// TODO 处理课程安排冲突问题
-
 	if err := dao.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&course).Updates(course).Error; err != nil {
 			return err

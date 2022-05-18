@@ -8,6 +8,7 @@ import (
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
+	"github.com/se2022-qiaqia/course-system/utils"
 	"gorm.io/gorm"
 	"strconv"
 )
@@ -87,6 +88,11 @@ func (api Course) OpenCourse(c *gin.Context) {
 		return
 	}
 
+	if utils.IsScheduleConflict(b.CourseSchedules, false) {
+		resp.FailJust("课程时间冲突", c)
+		return
+	}
+
 	if course, err := S.Services.Course.OpenCourse(b); err != nil {
 		resp.FailJust("开课失败", c)
 		return
@@ -149,6 +155,11 @@ func (api Course) UpdateCourseSpecific(c *gin.Context) {
 	var count int64
 	if err := dao.DB.Model(&dao.User{}).Where("id = ?", b.TeacherId).Count(&count).Error; errors.Is(err, gorm.ErrRecordNotFound) || count == 0 {
 		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应教师: id=%v", b.TeacherId), c)
+		return
+	}
+
+	if utils.IsScheduleConflict(b.CourseSchedules, false) {
+		resp.FailJust("课程时间冲突", c)
 		return
 	}
 

@@ -111,7 +111,7 @@ func NewCourseSpecific(course *dao.CourseSpecific) *CourseSpecific {
 }
 
 type CourseSchedule struct {
-	dao.Model
+	dao.Model   `json:"-"`
 	DayOfWeek   uint `json:"dayOfWeek"`   // 每周第几天
 	HoursId     uint `json:"hoursId"`     // 第几节课
 	HoursCount  uint `json:"hoursCount"`  // 课程时长

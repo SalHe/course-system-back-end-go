@@ -20,7 +20,8 @@ func (c Course) Init(Router *gin.RouterGroup) {
 	}
 	{
 		privateRouter.POST("", api.Api.Course.NewCourse)
-		privateRouter.PUT("/:id", api.Api.Course.UpdateCourse)
+		privateRouter.PUT("/:id", api.Api.Course.UpdateCourseCommon)
+		privateRouter.PUT("/spec/:id", api.Api.Course.UpdateCourseSpecific)
 		privateRouter.POST("/open", api.Api.Course.OpenCourse)
 	}
 }

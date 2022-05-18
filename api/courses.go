@@ -1,10 +1,15 @@
 package api
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
+	"gorm.io/gorm"
+	"strconv"
 )
 
 type Course struct{}
@@ -91,17 +96,70 @@ func (api Course) OpenCourse(c *gin.Context) {
 	}
 }
 
-// UpdateCourse TODO
-// @Summary					TODO。
-// @Description				TODO。
+// UpdateCourseCommon
+// @Summary					更新课程。
+// @Description				更新课程的公共信息。
 // @Tags					课程
 // @Accept					json
 // @Produce					json
-// @Param					new				body		resp.ErrorResponse	true	"TODO"
+// @Param 					id				path		int 							true 	"课程ID"
+// @Param					new				body		req.UpdateCourseCommonRequest	true	"新课程信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{array} 	resp.ErrorResponse TODO
+// @Success 				200 			{array} 	resp.CourseCommon	"更新后的课程信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
-// @Router					/course		 	[put]
-func (api Course) UpdateCourse(c *gin.Context) {
-	// TODO 实现 UpdateCourse
+// @Router					/course/{id} 	[put]
+func (api Course) UpdateCourseCommon(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var b req.UpdateCourseCommonRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	if updated, err := S.Services.Course.UpdateCourseCommon(uint(id), b); err == nil {
+		resp.Ok(resp.NewCourseCommon(updated), c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应课程: %v", id), c)
+		return
+	} else {
+		resp.FailJust("更新失败", c)
+		return
+	}
+}
+
+// UpdateCourseSpecific
+// @Summary					更新课头。
+// @Description
+// @Tags					课程
+// @Accept					json
+// @Produce					json
+// @Param 					id				path		int 							true 	"课头ID"
+// @Param					new				body		req.UpdateCourseSpecificRequest	true	"新课头信息"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} 	resp.CourseCommon	"更新后的课程信息"
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/course/spec/{id} 	[put]
+func (api Course) UpdateCourseSpecific(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var b req.UpdateCourseSpecificRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	var count int64
+	if err := dao.DB.Model(&dao.User{}).Where("id = ?", b.TeacherId).Count(&count).Error; errors.Is(err, gorm.ErrRecordNotFound) || count == 0 {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应教师: id=%v", b.TeacherId), c)
+		return
+	}
+
+	if updated, err := S.Services.Course.UpdateCourseSpecific(uint(id), b); err == nil {
+		resp.Ok(resp.NewCourseSpecific(updated), c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应课头: id=%v", id), c)
+		return
+	} else {
+		resp.FailJust("更新失败", c)
+		return
+	}
 }

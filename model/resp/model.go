@@ -111,22 +111,22 @@ func NewCourseSpecific(course *dao.CourseSpecific) *CourseSpecific {
 }
 
 type CourseSchedule struct {
-	dao.Model   `json:"-"`
-	DayOfWeek   uint `json:"dayOfWeek"`   // 每周第几天
-	HoursId     uint `json:"hoursId"`     // 第几节课
-	HoursCount  uint `json:"hoursCount"`  // 课程时长
-	StartWeekId uint `json:"startWeekId"` // 起始周次
-	EndWeekId   uint `json:"endWeekId"`   // 结束周次
+	dao.Model    `json:"-"`
+	DayOfWeek    uint `json:"dayOfWeek"`    // 每周第几天
+	StartHoursId uint `json:"startHoursId"` // 第几节课开始（包含该节课）
+	EndHoursId   uint `json:"endHoursId"`   // 第几节课结束（包含该节课）
+	StartWeekId  uint `json:"startWeekId"`  // 起始周次
+	EndWeekId    uint `json:"endWeekId"`    // 结束周次
 }
 
 func NewCourseSchedule(courseSchedule *dao.CourseSchedule) *CourseSchedule {
 	return &CourseSchedule{
-		Model:       courseSchedule.Model,
-		DayOfWeek:   courseSchedule.DayOfWeek,
-		HoursId:     courseSchedule.HoursId,
-		HoursCount:  courseSchedule.HoursCount,
-		StartWeekId: courseSchedule.StartWeekId,
-		EndWeekId:   courseSchedule.EndWeekId,
+		Model:        courseSchedule.Model,
+		DayOfWeek:    courseSchedule.DayOfWeek,
+		StartHoursId: courseSchedule.HoursId,
+		EndHoursId:   courseSchedule.HoursId + courseSchedule.HoursCount - 1,
+		StartWeekId:  courseSchedule.StartWeekId,
+		EndWeekId:    courseSchedule.EndWeekId,
 	}
 }
 

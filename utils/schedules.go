@@ -56,11 +56,11 @@ func IsScheduleConflict(schedules []*req.CourseSchedule, ignoreWeek bool) bool {
 		// memo: 7 * 24 * 4 = 672 bytes
 		days := make([][]bool, 7)
 		for i := 0; i < 7; i++ {
-			days[i] = make([]bool, 24)
+			days[i] = make([]bool, 24+1) // req.CourseSchedule 里的HoursId从1开始，这里额外开辟一个空间来处理，而不对HoursId进行偏移
 		}
 
 		for _, schedule := range schedules {
-			for i := schedule.HoursId; i < schedule.HoursId+schedule.HoursCount; i++ {
+			for i := schedule.StartHoursId; i <= schedule.EndHoursId; i++ {
 				if days[schedule.DayOfWeek][i] {
 					return true
 				}

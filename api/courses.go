@@ -88,6 +88,16 @@ func (api Course) OpenCourse(c *gin.Context) {
 		return
 	}
 
+	var teacher dao.User
+	if err := dao.DB.Model(&dao.User{}).Where("id = ?", b.TeacherId).First(&teacher).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应教师: id=%v", b.TeacherId), c)
+		return
+	}
+	if teacher.Role != dao.RoleTeacher {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("对应用户不是教师: id=%v", b.TeacherId), c)
+		return
+	}
+
 	if utils.IsScheduleConflict(b.CourseSchedules, false) {
 		resp.FailJust("课程时间冲突", c)
 		return
@@ -152,9 +162,14 @@ func (api Course) UpdateCourseSpecific(c *gin.Context) {
 		return
 	}
 
-	var count int64
-	if err := dao.DB.Model(&dao.User{}).Where("id = ?", b.TeacherId).Count(&count).Error; errors.Is(err, gorm.ErrRecordNotFound) || count == 0 {
+	// TODO 考虑抽取这部分逻辑
+	var teacher dao.User
+	if err := dao.DB.Model(&dao.User{}).Where("id = ?", b.TeacherId).First(&teacher).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应教师: id=%v", b.TeacherId), c)
+		return
+	}
+	if teacher.Role != dao.RoleTeacher {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("对应用户不是教师: id=%v", b.TeacherId), c)
 		return
 	}
 

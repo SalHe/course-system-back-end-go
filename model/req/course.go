@@ -18,11 +18,11 @@ type NewCourseRequest struct {
 }
 
 type CourseSchedule struct {
-	DayOfWeek   uint `json:"dayOfWeek" binding:"min=0,max=6,oneof=0 1 2 3 4 5 6" description:"每周第几天"`   // 每周第几天
-	HoursId     uint `json:"hoursId" binding:"required,min=1" description:"第几节课开始"`                     // 第几节课
-	HoursCount  uint `json:"hoursCount" binding:"required,min=1" description:"课程时长"`                    // 课程时长
-	StartWeekId uint `json:"startWeekId" binding:"required,min=1" description:"起始周"`                    // 起始周次
-	EndWeekId   uint `json:"endWeekId" binding:"required,min=1,gtefield=StartWeekId" description:"结束周"` // 结束周次
+	DayOfWeek    uint `json:"dayOfWeek" binding:"min=0,max=6,oneof=0 1 2 3 4 5 6" description:"每周第几天"`   // 每周第几天
+	StartHoursId uint `json:"startHoursId" binding:"required,min=1,max=24" description:"第几节课开始（包含该节课）"`  // 第几节课开始（包含该节课）
+	EndHoursId   uint `json:"endHoursId" binding:"required,min=1,max=24" description:"第几节课结束（包含该节课）"`    // 第几节课结束（包含该节课）
+	StartWeekId  uint `json:"startWeekId" binding:"required,min=1" description:"起始周"`                    // 起始周次
+	EndWeekId    uint `json:"endWeekId" binding:"required,min=1,gtefield=StartWeekId" description:"结束周"` // 结束周次
 }
 
 // OpenCourseRequest 开设课头。

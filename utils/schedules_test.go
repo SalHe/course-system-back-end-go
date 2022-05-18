@@ -25,8 +25,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 				{
 					StartWeekId: 16,
@@ -34,8 +34,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 			},
 			conflict: false,
@@ -49,8 +49,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 				{
 					StartWeekId: 1,
@@ -58,8 +58,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 2,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 			},
 			conflict: false,
@@ -73,8 +73,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1, // 1-5
-					HoursCount: 5,
+					StartHoursId: 1, // 1-5
+					EndHoursId:   5,
 				},
 				{
 					StartWeekId: 1,
@@ -82,8 +82,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    6, // 6-10
-					HoursCount: 5,
+					StartHoursId: 6, // 6-10
+					EndHoursId:   10,
 				},
 			},
 			conflict: false,
@@ -98,8 +98,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 				{
 					StartWeekId: 1,
@@ -107,8 +107,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 			},
 			conflict: true,
@@ -122,8 +122,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 				{
 					StartWeekId: 15,
@@ -131,8 +131,8 @@ func TestIsScheduleConflict(t *testing.T) {
 
 					DayOfWeek: 1,
 
-					HoursId:    1,
-					HoursCount: 5,
+					StartHoursId: 1,
+					EndHoursId:   5,
 				},
 			},
 			conflict: true,

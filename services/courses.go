@@ -83,8 +83,8 @@ func newDaoCourseSchedule(o []*req.CourseSchedule) []*dao.CourseSchedule {
 	for _, s := range o {
 		schedules = append(schedules, &dao.CourseSchedule{
 			DayOfWeek:   s.DayOfWeek,
-			HoursId:     s.HoursId,
-			HoursCount:  s.HoursCount,
+			HoursId:     s.StartHoursId,
+			HoursCount:  s.EndHoursId - s.StartHoursId + 1,
 			StartWeekId: s.StartWeekId,
 			EndWeekId:   s.EndWeekId,
 		})

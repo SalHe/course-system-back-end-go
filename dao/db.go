@@ -120,8 +120,11 @@ type Semester struct {
 // CourseSchedule 上课时间
 type CourseSchedule struct {
 	Model
-	DayOfWeek uint // 每周第几天
-	HoursId   uint // 第几节课
+	DayOfWeek   uint // 每周第几天
+	HoursId     uint // 第几节课
+	HoursCount  uint // 课程时长
+	StartWeekId uint // 起始周次
+	EndWeekId   uint // 结束周次
 }
 
 // StudentCourse 学生和具体某门课的关系

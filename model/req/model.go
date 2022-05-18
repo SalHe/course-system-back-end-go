@@ -37,8 +37,11 @@ type NewCourseRequest struct {
 }
 
 type CourseSchedule struct {
-	DayOfWeek uint `json:"dayOfWeek" binding:"required,min=0,max=6"` // 每周第几天
-	HoursId   uint `json:"hoursId" binding:"required,min=1"`         // 第几节课
+	DayOfWeek   uint `json:"dayOfWeek" binding:"min=0,max=6,oneof=0 1 2 3 4 5 6" description:"每周第几天"`   // 每周第几天
+	HoursId     uint `json:"hoursId" binding:"required,min=1" description:"第几节课开始"`                     // 第几节课
+	HoursCount  uint `json:"hoursCount" binding:"required,min=1" description:"课程时长"`                    // 课程时长
+	StartWeekId uint `json:"startWeekId" binding:"required,min=1" description:"起始周"`                    // 起始周次
+	EndWeekId   uint `json:"endWeekId" binding:"required,min=1,gtefield=StartWeekId" description:"结束周"` // 结束周次
 }
 
 // OpenCourseRequest 开设课头。
@@ -48,7 +51,7 @@ type OpenCourseRequest struct {
 	TeacherId       uint              `json:"teacherId" binding:"required" description:"教师id"`      // 教师id
 	Location        string            `json:"location" binding:"required" description:"上课地点"`       // 上课地点
 	Quota           uint              `json:"quota" binding:"required" description:"容量"`            // 容量
-	CourseSchedules []*CourseSchedule `json:"courseSchedules" description:"上课时间"`                   // 上课时间
+	CourseSchedules []*CourseSchedule `json:"courseSchedules" binding:"dive" description:"上课时间"`    // 上课时间
 }
 
 // NewCollegeService 新学院信息

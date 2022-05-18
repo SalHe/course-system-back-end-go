@@ -54,8 +54,11 @@ func (c Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, 
 	var schedules []*dao.CourseSchedule
 	for _, s := range o.CourseSchedules {
 		schedules = append(schedules, &dao.CourseSchedule{
-			DayOfWeek: s.DayOfWeek,
-			HoursId:   s.HoursId,
+			DayOfWeek:   s.DayOfWeek,
+			HoursId:     s.HoursId,
+			HoursCount:  s.HoursCount,
+			StartWeekId: s.StartWeekId,
+			EndWeekId:   s.EndWeekId,
 		})
 	}
 

@@ -124,7 +124,7 @@ func (api User) GetUserList(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					id				path		int			true		"用户id"
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[delete]
 func (api User) DeleteUser(c *gin.Context) {
@@ -151,7 +151,7 @@ func (api User) DeleteUser(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					info 			body		req.UpdateUserRequest			true		"新用户信息"
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	resp.User "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user [post]
 func (api User) UpdateSelfInfo(c *gin.Context) {
@@ -163,9 +163,9 @@ func (api User) UpdateSelfInfo(c *gin.Context) {
 		return
 	}
 
-	oldUser, err := S.Services.User.UpdateUser(id, b, claims.IsAdmin())
+	updated, err := S.Services.User.UpdateUser(id, b, claims.IsAdmin())
 	if err == nil {
-		resp.Ok(oldUser, c)
+		resp.Ok(resp.NewUser(updated), c)
 		return
 	} else {
 		resp.Fail(resp.ErrCodeInternal, "更新个人信息失败", c)
@@ -182,7 +182,7 @@ func (api User) UpdateSelfInfo(c *gin.Context) {
 // @Security				ApiKeyAuth
 // @Param					id				path		int							true		"用户id"
 // @Param					info 			body		req.UpdateUserRequest			true		"新用户信息"
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	resp.User "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[post]
 func (api User) UpdateUserInfo(c *gin.Context) {
@@ -192,9 +192,9 @@ func (api User) UpdateUserInfo(c *gin.Context) {
 		return
 	}
 
-	oldUser, err := S.Services.User.UpdateUser(uint(id), b, true)
+	updated, err := S.Services.User.UpdateUser(uint(id), b, true)
 	if err == nil {
-		resp.Ok(oldUser, c)
+		resp.Ok(resp.NewUser(updated), c)
 		return
 	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
 		resp.Fail(resp.ErrCodeNotFound, "未找到对应用户", c)
@@ -214,7 +214,7 @@ func (api User) UpdateUserInfo(c *gin.Context) {
 // @Security				ApiKeyAuth
 // @Param					id				path		int								false		"用户id"
 // @Param					info 			body		req.UpdateUserPassword			true		"新用户信息"
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/pwd [post]
 // @Router					/user/{id}/pwd [post]

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/req"
-	"github.com/se2022-qiaqia/course-system/model/resp"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -62,14 +61,14 @@ func (u User) DeleteUser(id uint) error {
 	return nil
 }
 
-func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool) (*resp.User, error) {
+func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool) (*dao.User, error) {
 	var user dao.User
-	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
+	if err := dao.DB.Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 
 	// 暂时就先返回 resp.User 吧
-	oldUserInfo := resp.NewUser(&user)
+	// oldUserInfo := resp.NewUser(&user)
 
 	user.Username = b.Username
 	if operatedByAdmin {
@@ -82,7 +81,10 @@ func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool)
 	if err := dao.DB.Save(&user).Error; err != nil {
 		return nil, err
 	}
-	return oldUserInfo, nil
+
+	dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user)
+
+	return &user, nil
 }
 
 func (u User) UpdatePassword(id uint, pwd req.UpdateUserPassword) error {

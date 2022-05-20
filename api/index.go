@@ -6,6 +6,7 @@ type RootApi struct {
 	User
 	Course
 	College
+	Semester
 }
 
 var Api = &RootApi{}

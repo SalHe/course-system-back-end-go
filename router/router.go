@@ -30,6 +30,7 @@ func NewRouter(engine *gin.Engine) *gin.Engine {
 	Router.User.Init(authenticatedRouter)
 	Router.Course.Init(authenticatedRouter)
 	Router.College.Init(authenticatedRouter)
+	Router.Semester.Init(authenticatedRouter)
 
 	return engine
 }

@@ -28,3 +28,7 @@ type NewCollegeService struct {
 type QueryCollegesService struct {
 	Name string `json:"name" description:"学院名称"` // 学院名称，将会模糊搜索
 }
+
+type IdReq struct {
+	Id uint `json:"id" binding:"required"`
+}

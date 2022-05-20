@@ -54,6 +54,7 @@ func Migrate() {
 	DB.AutoMigrate(&Semester{})
 	DB.AutoMigrate(&CourseSchedule{})
 	DB.AutoMigrate(&StudentCourse{})
+	DB.AutoMigrate(&Setting{})
 }
 
 type Model struct {

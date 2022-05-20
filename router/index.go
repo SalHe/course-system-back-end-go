@@ -12,6 +12,7 @@ type RootRouter struct {
 	Start
 	User
 	College
+	Semester
 }
 
 var Router = &RootRouter{}

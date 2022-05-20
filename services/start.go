@@ -7,13 +7,13 @@ import (
 
 type Start struct{}
 
-func (s Start) IsInitialized() bool {
+func (s *Start) IsInitialized() bool {
 	var count int64
 	err := dao.DB.Model(&dao.User{}).Count(&count).Error
 	return err == nil && count >= 1
 }
 
-func (s Start) InitSystem(b req.InitRequest) error {
+func (s *Start) InitSystem(b req.InitRequest) error {
 	if s.IsInitialized() {
 		return ErrConflict
 	} else {

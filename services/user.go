@@ -10,7 +10,7 @@ import (
 
 type User struct{}
 
-func (u User) GetUser(id uint) (*dao.User, error) {
+func (u *User) GetUser(id uint) (*dao.User, error) {
 	var user dao.User
 
 	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
@@ -19,7 +19,7 @@ func (u User) GetUser(id uint) (*dao.User, error) {
 	return &user, nil
 }
 
-func (u User) NewUser(b req.NewUserRequest) error {
+func (u *User) NewUser(b req.NewUserRequest) error {
 	var user *dao.User
 	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ? OR username = ?", b.Id, b.Username, b.Username, b.Id).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		user := &dao.User{
@@ -41,7 +41,7 @@ func (u User) NewUser(b req.NewUserRequest) error {
 	}
 }
 
-func (u User) GetUserList(pageInfo req.Page) ([]dao.User, error) {
+func (u *User) GetUserList(pageInfo req.Page) ([]dao.User, error) {
 	var users []dao.User
 	if err := dao.DB.Preload(clause.Associations).Offset(pageInfo.Offset()).Limit(pageInfo.ActualSize()).Find(&users).Error; err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (u User) GetUserList(pageInfo req.Page) ([]dao.User, error) {
 	return users, nil
 }
 
-func (u User) DeleteUser(id uint) error {
+func (u *User) DeleteUser(id uint) error {
 	var user dao.User
 	var count int64
 	if dao.DB.Model(&dao.User{}).Find(&user, "id = ?", id).Count(&count); count <= 0 {
@@ -61,7 +61,7 @@ func (u User) DeleteUser(id uint) error {
 	return nil
 }
 
-func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool) (*dao.User, error) {
+func (u *User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool) (*dao.User, error) {
 	var user dao.User
 	if err := dao.DB.Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (u User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool)
 	return &user, nil
 }
 
-func (u User) UpdatePassword(id uint, pwd req.UpdateUserPassword) error {
+func (u *User) UpdatePassword(id uint, pwd req.UpdateUserPassword) error {
 	var user dao.User
 	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ?", id).First(&user).Error; err != nil {
 		return err

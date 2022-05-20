@@ -10,7 +10,7 @@ import (
 
 type Public struct{}
 
-func (p Public) Login(l req.LoginCredit) (user *dao.User, err error) {
+func (p *Public) Login(l req.LoginCredit) (user *dao.User, err error) {
 	if err = dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ? OR username = ?", l.Username, l.Username).First(&user).Error; err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func (p Public) Login(l req.LoginCredit) (user *dao.User, err error) {
 	return nil, ErrWrongPassword
 }
 
-func (p Public) Register(b req.RegisterInfo) (bool, error) {
+func (p *Public) Register(b req.RegisterInfo) (bool, error) {
 	var user dao.User
 	if err := dao.DB.Unscoped().Model(&dao.User{}).Where("id = ? OR username = ?", b.Id, b.Username).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		user = dao.User{

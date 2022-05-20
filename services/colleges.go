@@ -7,7 +7,7 @@ import (
 
 type College struct{}
 
-func (c College) Query(q req.QueryCollegesService) []dao.College {
+func (c *College) Query(q req.QueryCollegesService) []dao.College {
 	var colleges []dao.College
 	if len(q.Name) > 0 {
 		dao.DB.Where("name LIKE ?", "%"+q.Name+"%").Find(&colleges)
@@ -17,7 +17,7 @@ func (c College) Query(q req.QueryCollegesService) []dao.College {
 	return colleges
 }
 
-func (c College) NewCollege(n req.NewCollegeService) (*dao.College, error) {
+func (c *College) NewCollege(n req.NewCollegeService) (*dao.College, error) {
 	college := &dao.College{Name: n.Name}
 	if err := dao.DB.Create(&college).Error; err != nil {
 		return nil, err

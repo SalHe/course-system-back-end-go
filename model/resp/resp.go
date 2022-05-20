@@ -19,14 +19,16 @@ const (
 	ErrCodeConflict
 	ErrCodeUnauthorized
 	ErrCodeInternal
+	ErrCodeQuotaExceeded
 )
 
 var errAndHttpCode = map[ErrCode]int{
-	ErrCodeFail:         http.StatusBadRequest,
-	ErrCodeNotFound:     http.StatusNotFound,
-	ErrCodeConflict:     http.StatusConflict,
-	ErrCodeUnauthorized: http.StatusUnauthorized,
-	ErrCodeInternal:     http.StatusInternalServerError,
+	ErrCodeFail:          http.StatusBadRequest,
+	ErrCodeNotFound:      http.StatusNotFound,
+	ErrCodeConflict:      http.StatusConflict,
+	ErrCodeUnauthorized:  http.StatusUnauthorized,
+	ErrCodeInternal:      http.StatusInternalServerError,
+	ErrCodeQuotaExceeded: http.StatusForbidden,
 }
 
 func Ok(data interface{}, c *gin.Context) {

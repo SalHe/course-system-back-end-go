@@ -92,7 +92,7 @@ func createServer() *http.Server {
 
 	logger := log.L
 	baseEngine.Use(middleware.LoggerWithZerolog(logger))
-	baseEngine.Use(middleware.RecoveryWithZerolog(logger, true))
+	baseEngine.Use(middleware.RecoveryWithZerolog(logger, true, config.Config.Debug))
 
 	r := router.NewRouter(baseEngine)
 

@@ -10,18 +10,31 @@ import (
 type Course struct{}
 
 func (c Course) Init(Router *gin.RouterGroup) {
-	publicRouter := Router.Group("/course")
+	r := Router.Group("/course")
 
-	privateRouter := publicRouter.Group("")
-	privateRouter.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+	sr := r.Group("")
+	sr.Use(middleware.AuthorizedRoleRequired(dao.RoleStudent))
+
+	ar := r.Group("")
+	ar.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
+
+	asr := r.Group("")
+	asr.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin, dao.RoleStudent))
 
 	{
-		publicRouter.POST("/list", api.Api.Course.GetCourseList)
+		r.POST("/list", api.Api.Course.GetCourseList)
 	}
 	{
-		privateRouter.POST("", api.Api.Course.NewCourse)
-		privateRouter.PUT("/:id", api.Api.Course.UpdateCourseCommon)
-		privateRouter.PUT("/spec/:id", api.Api.Course.UpdateCourseSpecific)
-		privateRouter.POST("/open", api.Api.Course.OpenCourse)
+		// 选撤课
+		asr.POST("/select", api.Api.Course.SelectCourse)
+		asr.DELETE("/select", api.Api.Course.UnSelectCourse)
+	}
+	{
+		// 管理课程相关
+		ar.POST("", api.Api.Course.NewCourse)
+		ar.PUT("/:id", api.Api.Course.UpdateCourseCommon)
+		ar.PUT("/spec/:id", api.Api.Course.UpdateCourseSpecific)
+		ar.POST("/open", api.Api.Course.OpenCourse)
+
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -14,7 +15,7 @@ import (
 	"time"
 )
 
-func RecoveryWithZerolog(logger *zerolog.Logger, stack bool) gin.HandlerFunc {
+func RecoveryWithZerolog(logger *zerolog.Logger, stack bool, goLogStack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -44,6 +45,11 @@ func RecoveryWithZerolog(logger *zerolog.Logger, stack bool) gin.HandlerFunc {
 					c.Error(err.(error)) // nolint: errcheck
 					c.Abort()
 					return
+				}
+
+				if goLogStack {
+					log.Printf("[Recovery] %s panic recovered:\n%s\n%s\n",
+						c.Request.RemoteAddr, string(httpRequest), debug.Stack())
 				}
 
 				event := logger.Error().

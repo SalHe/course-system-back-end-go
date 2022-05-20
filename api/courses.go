@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/middleware"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
+	"github.com/se2022-qiaqia/course-system/token"
 	"github.com/se2022-qiaqia/course-system/utils"
 	"gorm.io/gorm"
 	"strconv"
@@ -188,4 +190,92 @@ func (api Course) UpdateCourseSpecific(c *gin.Context) {
 		resp.FailJust("更新失败", c)
 		return
 	}
+}
+
+// SelectCourse
+// @Summary					选课。
+// @Description
+// @Tags					课程
+// @Accept					json
+// @Produce					json
+// @Param					id				body		req.SelectCourseRequest	true "选课信息"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} 	resp.CourseSpecific	"选中的课头"
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/course/select 	[post]
+func (api *Course) SelectCourse(c *gin.Context) {
+	// TODO 待精心测试该API
+
+	var b req.SelectCourseRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+
+	if b.StudentId <= 0 {
+		b.StudentId = claims.ID
+	}
+
+	if selected, err := S.Services.Course.SelectCourse(&b, claims); err == nil {
+		resp.Ok(resp.NewCourseSpecific(selected), c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应课头: id=%v", b.CourseId), c)
+		return
+	} else if errors.Is(err, S.ErrUnauthorized) {
+		resp.Fail(resp.ErrCodeUnauthorized, "没有权限", c)
+		return
+	} else if errors.Is(err, S.ErrQuotaExceeded) {
+		resp.Fail(resp.ErrCodeQuotaExceeded, "余量不足", c)
+		return
+	} else if errors.Is(err, S.ErrConflict) {
+		resp.Fail(resp.ErrCodeConflict, "课程与当前课表时间冲突，或者您已选该课头", c)
+		return
+	}
+
+	resp.FailJust("选课失败", c)
+	return
+}
+
+// UnSelectCourse
+// @Summary					撤课。
+// @Description
+// @Tags					课程
+// @Accept					json
+// @Produce					json
+// @Param					id				body		req.SelectCourseRequest	true "撤课信息"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} 	resp.CourseSpecific	"撤掉的课头信息"
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/course/select 	[delete]
+func (api *Course) UnSelectCourse(c *gin.Context) {
+	// TODO 待精心测试该API
+
+	var b req.SelectCourseRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+
+	if b.StudentId <= 0 {
+		b.StudentId = claims.ID
+	}
+
+	if unselected, err := S.Services.Course.UnSelectCourse(&b, claims); err == nil {
+		resp.Ok(resp.NewCourseSpecific(unselected), c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, fmt.Sprintf("未找到对应课头: id=%v", b.CourseId), c)
+		return
+	} else if errors.Is(err, S.ErrUnauthorized) {
+		resp.Fail(resp.ErrCodeUnauthorized, "没有权限", c)
+		return
+	}
+
+	resp.FailJust("撤课失败", c)
+	return
 }

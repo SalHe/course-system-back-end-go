@@ -9,4 +9,7 @@ var (
 	ErrConflict      = errors.New("conflict")
 	ErrWrongPassword = errors.New("wrong password")
 	ErrInvalidParams = errors.New("invalid params")
+	ErrUnauthorized  = errors.New("unauthorized")
+	ErrQuotaExceeded = errors.New("quota exceeded")
+	ErrCannotOperate = errors.New("cannot operate")
 )

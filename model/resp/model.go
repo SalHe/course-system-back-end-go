@@ -143,3 +143,8 @@ func NewSemester(semester *dao.Semester) *Semester {
 		Term:  semester.Term,
 	}
 }
+
+type CourseScheduleWithCourseSpecific struct {
+	CourseSchedule
+	*CourseSpecific
+}

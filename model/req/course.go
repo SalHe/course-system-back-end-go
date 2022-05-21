@@ -69,3 +69,9 @@ type SelectCourseRequest struct {
 	CourseId  uint `json:"courseId" binding:"required" description:"课头id"` // 课头id
 	StudentId uint `json:"studentId" description:"学生id"`                   // 学生id，用于指定为谁选课和撤课（但是仅管理员可为他人选撤课仅管理员）
 }
+
+// GetSchedulesRequest 获取课程安排
+type GetSchedulesRequest struct {
+	UserId      uint   `json:"userId" description:"用户id"`                         // 用户id。可以为教师、学生，为空时获取当前登录用户的。
+	SemesterIds []uint `json:"semesterIds" binding:"required" description:"学期id"` // 学期id。为空则获取所有学期的课程安排
+}

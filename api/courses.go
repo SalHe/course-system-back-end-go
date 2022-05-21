@@ -279,3 +279,79 @@ func (api *Course) UnSelectCourse(c *gin.Context) {
 	resp.FailJust("撤课失败", c)
 	return
 }
+
+// GetCourseSchedules
+// @Summary					查询课程安排。
+// @Description
+// @Tags					课程
+// @Accept					json
+// @Produce					json
+// @Param					params				body		req.GetSchedulesRequest	true "查询信息"
+// @Security				ApiKeyAuth
+// @Success 				200 				{array} 	dao.CourseScheduleWithCourseSpecific
+// @Failure 				400 				{object} 	resp.ErrorResponse
+// @Router					/course/schedules 	[post]
+func (api *Course) GetCourseSchedules(c *gin.Context) {
+	var b req.GetSchedulesRequest
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+
+	if b.UserId <= 0 {
+		b.UserId = claims.ID
+	}
+
+	if b.UserId != claims.ID && !claims.IsAdmin() {
+		resp.Fail(resp.ErrCodeUnauthorized, "您不可查询他人课程安排", c)
+		return
+	}
+
+	var user dao.User
+	if err := dao.FindUserById(dao.DB, b.UserId).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			resp.Fail(resp.ErrCodeNotFound, "未找到对应用户", c)
+			return
+		}
+		resp.Fail(resp.ErrCodeNotFound, "查询用户失败", c)
+		return
+	}
+
+	if b.UserId == claims.ID && claims.IsAdmin() {
+		// 管理员自身不会有课程安排
+		resp.Ok([]dao.CourseScheduleWithCourseSpecific{}, c)
+		return
+	}
+
+	var schedules []*dao.CourseScheduleWithCourseSpecific
+	var err error
+	if user.Role == dao.RoleStudent {
+		schedules, err = S.Services.Course.GetStudentSchedules(&b)
+	} else if user.Role == dao.RoleAdmin {
+		schedules, err = S.Services.Course.GetTeacherSchedules(&b)
+	}
+
+	if err == nil {
+		res := make([]*resp.CourseScheduleWithCourseSpecific, len(schedules))
+		for i, schedule := range schedules {
+			res[i] = &resp.CourseScheduleWithCourseSpecific{
+				CourseSchedule: resp.CourseSchedule{
+					Model:        schedule.Model,
+					DayOfWeek:    schedule.DayOfWeek,
+					StartHoursId: schedule.HoursId,
+					EndHoursId:   schedule.HoursId + schedule.HoursCount - 1,
+					StartWeekId:  schedule.StartWeekId,
+					EndWeekId:    schedule.EndWeekId,
+				},
+				CourseSpecific: resp.NewCourseSpecific(schedule.CourseSpecific),
+			}
+		}
+		resp.Ok(res, c)
+		return
+	} else {
+		resp.FailJust("查询课程安排失败", c)
+		return
+	}
+}

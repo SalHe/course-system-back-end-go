@@ -284,3 +284,47 @@ func (c *Course) UnSelectCourse(b *req.SelectCourseRequest, operator *token.JwtC
 		Model(&dao.CourseSpecific{}).Where("id = ?", b.CourseId).First(&course)
 	return &course, nil
 }
+
+func (c *Course) GetStudentSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseScheduleWithCourseSpecific, error) {
+	tx := dao.CourseSchedule_CourseSpecific_Student(dao.DB)
+	if len(b.SemesterIds) > 0 {
+		tx = tx.Where("semester_id IN (?)", b.SemesterIds)
+	}
+	tx = tx.Select("course_schedules.*, course_specific_course_schedule.course_specific_id")
+
+	tx = tx.Where("student_id = ?", b.UserId)
+
+	var schedules []*dao.CourseScheduleWithCourseSpecific
+	if err := tx.Preload(clause.Associations).
+		Preload("CourseSpecific.CourseCommon").
+		Preload("CourseSpecific.CourseCommon." + clause.Associations).
+		Preload("CourseSpecific." + clause.Associations).
+		Preload("CourseSpecific.Teacher." + clause.Associations).
+		Preload("CourseSpecific.Semester").
+		Find(&schedules).Error; err != nil {
+		return nil, err
+	}
+	return schedules, nil
+}
+
+func (c *Course) GetTeacherSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseScheduleWithCourseSpecific, error) {
+	tx := dao.CourseSchedule_CourseSpecific_Student(dao.DB)
+	if len(b.SemesterIds) > 0 {
+		tx = tx.Where("semester_id IN (?)", b.SemesterIds)
+	}
+	tx = tx.Select("course_schedules.*, course_specific_course_schedule.course_specific_id")
+
+	tx = tx.Where("teacher_id = ?", b.UserId)
+
+	var schedules []*dao.CourseScheduleWithCourseSpecific
+	if err := tx.Preload(clause.Associations).
+		Preload("CourseSpecific.CourseCommon").
+		Preload("CourseSpecific.CourseCommon." + clause.Associations).
+		Preload("CourseSpecific." + clause.Associations).
+		Preload("CourseSpecific.Teacher." + clause.Associations).
+		Preload("CourseSpecific.Semester").
+		Find(&schedules).Error; err != nil {
+		return nil, err
+	}
+	return schedules, nil
+}

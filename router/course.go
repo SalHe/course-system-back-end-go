@@ -23,6 +23,7 @@ func (c Course) Init(Router *gin.RouterGroup) {
 
 	{
 		r.POST("/list", api.Api.Course.GetCourseList)
+		r.POST("/schedules", api.Api.Course.GetCourseSchedules)
 	}
 	{
 		// 选撤课

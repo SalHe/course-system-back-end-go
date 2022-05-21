@@ -28,7 +28,7 @@ type Course struct{}
 // @Success 				200 			{array} 	resp.CourseCommonWithSpecifics
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/list 	[post]
-func (api Course) GetCourseList(c *gin.Context) {
+func (api *Course) GetCourseList(c *gin.Context) {
 	var b req.QueryCoursesRequest
 	if !req.BindAndValidate(c, &b) {
 		return
@@ -58,7 +58,7 @@ func (api Course) GetCourseList(c *gin.Context) {
 // @Success 				200 			{object} 	resp.CourseCommon
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course		 	[post]
-func (api Course) NewCourse(c *gin.Context) {
+func (api *Course) NewCourse(c *gin.Context) {
 	var b req.NewCourseRequest
 	if !req.BindAndValidate(c, &b) {
 		return
@@ -84,7 +84,7 @@ func (api Course) NewCourse(c *gin.Context) {
 // @Success 				200 			{object} 	resp.CourseSpecific
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/open	[post]
-func (api Course) OpenCourse(c *gin.Context) {
+func (api *Course) OpenCourse(c *gin.Context) {
 	var b req.OpenCourseRequest
 	if !req.BindAndValidate(c, &b) {
 		return
@@ -126,7 +126,7 @@ func (api Course) OpenCourse(c *gin.Context) {
 // @Success 				200 			{array} 	resp.CourseCommon	"更新后的课程信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/{id} 	[put]
-func (api Course) UpdateCourseCommon(c *gin.Context) {
+func (api *Course) UpdateCourseCommon(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var b req.UpdateCourseCommonRequest
 	if !req.BindAndValidate(c, &b) {
@@ -157,7 +157,7 @@ func (api Course) UpdateCourseCommon(c *gin.Context) {
 // @Success 				200 			{array} 	resp.CourseCommon	"更新后的课程信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/spec/{id} 	[put]
-func (api Course) UpdateCourseSpecific(c *gin.Context) {
+func (api *Course) UpdateCourseSpecific(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var b req.UpdateCourseSpecificRequest
 	if !req.BindAndValidate(c, &b) {

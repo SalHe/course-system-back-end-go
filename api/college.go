@@ -19,7 +19,7 @@ type College struct{}
 // @Security				ApiKeyAuth
 // @Success 				200 			{array} resp.College
 // @Router					/college/list [post]
-func (api College) ListColleges(c *gin.Context) {
+func (api *College) ListColleges(c *gin.Context) {
 	var b req.QueryCollegesService
 	if !req.BindAndValidate(c, &b) {
 		return
@@ -44,7 +44,7 @@ func (api College) ListColleges(c *gin.Context) {
 // @Success 				200 			{array} 	resp.College
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/college/new 	[post]
-func (api College) NewCollege(c *gin.Context) {
+func (api *College) NewCollege(c *gin.Context) {
 	var b req.NewCollegeService
 	if !req.BindAndValidate(c, &b) {
 		return

@@ -19,7 +19,7 @@ type Start struct{}
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/init			[get]
-func (api Start) IsInitialized(c *gin.Context) {
+func (api *Start) IsInitialized(c *gin.Context) {
 	resp.Ok(S.Services.IsInitialized(), c)
 }
 
@@ -33,7 +33,7 @@ func (api Start) IsInitialized(c *gin.Context) {
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/init			[post]
-func (api Start) InitSystem(c *gin.Context) {
+func (api *Start) InitSystem(c *gin.Context) {
 	var b req.InitRequest
 	if !req.BindAndValidate(c, &b) {
 		return

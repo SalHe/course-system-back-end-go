@@ -22,7 +22,7 @@ type Public struct{}
 // @Success 				200 			{object}	string
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/login		 	[post]
-func (api Public) Login(c *gin.Context) {
+func (api *Public) Login(c *gin.Context) {
 	var credit req.LoginCredit
 	if !req.BindAndValidate(c, &credit) {
 		return
@@ -53,7 +53,7 @@ func (api Public) Login(c *gin.Context) {
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/register		[post]
-func (api Public) Register(c *gin.Context) {
+func (api *Public) Register(c *gin.Context) {
 	var b req.RegisterInfo
 	if !req.BindAndValidate(c, &b) {
 		return

@@ -24,7 +24,7 @@ type User struct{}
 // @Success 				200 			{object}	resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user		[get]
-func (api User) GetUserInfo(c *gin.Context) {
+func (api *User) GetUserInfo(c *gin.Context) {
 	cla, _ := c.Get(middleware.ClaimsKey)
 	claims := cla.(*token.JwtClaims)
 	resp.Ok(resp.NewUser(claims.User), c)
@@ -41,7 +41,7 @@ func (api User) GetUserInfo(c *gin.Context) {
 // @Success 				200 			{object}	resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[get]
-func (api User) GetOtherUserInfo(c *gin.Context) {
+func (api *User) GetOtherUserInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := S.Services.User.GetUser(uint(id))
 	if err == nil {
@@ -67,7 +67,7 @@ func (api User) GetOtherUserInfo(c *gin.Context) {
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/new		[post]
-func (api User) NewUser(c *gin.Context) {
+func (api *User) NewUser(c *gin.Context) {
 	var b req.NewUserRequest
 	if !req.BindAndValidate(c, &b) {
 		return
@@ -98,7 +98,7 @@ func (api User) NewUser(c *gin.Context) {
 // @Success 				200 			{array}		resp.User
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/list		[get]
-func (api User) GetUserList(c *gin.Context) {
+func (api *User) GetUserList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "10"))
 
@@ -127,7 +127,7 @@ func (api User) GetUserList(c *gin.Context) {
 // @Success 				200 			{object}	boolean
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[delete]
-func (api User) DeleteUser(c *gin.Context) {
+func (api *User) DeleteUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := S.Services.User.DeleteUser(uint(id))
@@ -154,7 +154,7 @@ func (api User) DeleteUser(c *gin.Context) {
 // @Success 				200 			{object}	resp.User "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user [post]
-func (api User) UpdateSelfInfo(c *gin.Context) {
+func (api *User) UpdateSelfInfo(c *gin.Context) {
 	cla, _ := c.Get(middleware.ClaimsKey)
 	claims := cla.(*token.JwtClaims)
 	id := claims.ID
@@ -185,7 +185,7 @@ func (api User) UpdateSelfInfo(c *gin.Context) {
 // @Success 				200 			{object}	resp.User "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[post]
-func (api User) UpdateUserInfo(c *gin.Context) {
+func (api *User) UpdateUserInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var b req.UpdateUserRequest
 	if !req.BindAndValidate(c, &b) {
@@ -218,7 +218,7 @@ func (api User) UpdateUserInfo(c *gin.Context) {
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/pwd [post]
 // @Router					/user/{id}/pwd [post]
-func (api User) UpdatePassword(c *gin.Context) {
+func (api *User) UpdatePassword(c *gin.Context) {
 	cla, _ := c.Get(middleware.ClaimsKey)
 	claims := cla.(*token.JwtClaims)
 

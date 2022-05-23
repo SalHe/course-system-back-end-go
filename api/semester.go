@@ -25,7 +25,7 @@ func (api *Semester) QuerySemester(c *gin.Context) {
 		for i, semester := range semesters {
 			ss[i] = resp.NewSemester(semester)
 		}
-		resp.Ok(semesters, c)
+		resp.Ok(ss, c)
 		return
 	} else {
 		resp.FailJust("获取失败", c)

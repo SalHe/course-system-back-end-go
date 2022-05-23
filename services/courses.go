@@ -22,15 +22,26 @@ func (c *Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []
 	}
 
 	{
-		var conditions []interface{}
+		// TODO 待优化
+		query := ""
+		var args []interface{}
+		joinQuery := func(q string, arg interface{}) {
+			if len(query) > 0 {
+				query += " and "
+			}
+			query += q
+			args = append(args, arg)
+		}
 		if q.Semester > 0 {
-			conditions = append(conditions, "semester_id = ?", q.Semester)
+			joinQuery("semester_id = ?", q.Semester)
 		}
 		if len(q.TeacherName) > 0 {
-			conditions = append(conditions, "teacher_id in (?)", dao.DB.Table("users").Where("real_name like ?", "%"+q.TeacherName+"%").Select("id"))
+			joinQuery("teacher_id in (?)", dao.DB.Table("users").Where("real_name like ?", "%"+q.TeacherName+"%").Select("id"))
 		}
-		if len(conditions) > 0 {
-			db = db.Preload("CourseSpecifics", conditions...).
+		if len(args) > 0 {
+			fargs := append([]interface{}{}, query)
+			fargs = append(fargs, args...)
+			db = db.Preload("CourseSpecifics", fargs...).
 				Preload("CourseSpecifics." + clause.Associations).
 				Preload("CourseSpecifics.Teacher.College")
 		}

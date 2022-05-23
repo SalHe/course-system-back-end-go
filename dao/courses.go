@@ -17,6 +17,7 @@ type CourseCommon struct {
 }
 
 // CourseSpecific 具体课头，指具体开给某一个老师的课程
+// TODO 考虑记录课头状态（可选课、已结课等）
 type CourseSpecific struct {
 	Model
 	CourseCommonId  uint              `gorm:"not null"` // 课程公共信息ID

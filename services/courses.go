@@ -191,7 +191,7 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 		var targetSchedule []*dao.CourseSchedule
 		tx := dao.DB.Table("course_schedules").Select("course_schedules.*").
 			Joins("JOIN course_specific_course_schedule ON course_specific_course_schedule.course_schedule_id = course_schedules.id").
-			Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id AND student_courses.course_status NOT IN (?)", []dao.CourseStatus{dao.CourseStatusWithdraw, dao.CourseStatusClosed})
+			Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id AND student_courses.course_status IN (?)", []dao.CourseStatus{dao.CourseStatusNormal})
 		tx.Where("student_courses.student_id = ?", b.StudentId).
 			Find(&schedules)
 		tx.Where("course_specific_course_schedule.course_specific_id = ?", b.CourseId).
@@ -258,7 +258,7 @@ func (c *Course) UnSelectCourse(b *req.SelectCourseRequest, operator *token.JwtC
 		return nil, err
 	}
 
-	if studentCourse.CourseStatus == dao.CourseStatusWithdraw || studentCourse.CourseStatus == dao.CourseStatusClosed {
+	if studentCourse.CourseStatus == dao.CourseStatusWithdraw {
 		return nil, ErrCannotOperate
 	}
 

@@ -23,8 +23,8 @@ const (
 const (
 	CourseStatusNormal   = CourseStatus(iota) // 正常（已选上，正常上课中）
 	CourseStatusWithdraw                      // 撤销（已退课）
-	CourseStatusClosed                        // 已结课
-	// TODO 结课状态应该表示在课程中，而不是`学生-课程`中
+	// CourseStatusClosed                        // 已结课
+	// 结课状态应该表示在课程中，而不是`学生-课程`中
 )
 
 func Init() {

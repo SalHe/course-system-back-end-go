@@ -25,7 +25,7 @@ type Course struct{}
 // @Produce					json
 // @Param					params			body		req.QueryCoursesRequest	true	"筛选条件"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=[]resp.CourseCommonWithSpecifics}
+// @Success 				200 			{object} 	resp.OkResponse{data=resp.Page{contents=[]resp.CourseCommonWithSpecifics}}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/list 	[post]
 func (api *Course) GetCourseList(c *gin.Context) {

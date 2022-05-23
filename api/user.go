@@ -21,7 +21,7 @@ type User struct{}
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	resp.OkResponse{data=resp.User}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user		[get]
 func (api *User) GetUserInfo(c *gin.Context) {
@@ -38,7 +38,7 @@ func (api *User) GetUserInfo(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					id				path		int			true		"用户id"
-// @Success 				200 			{object}	resp.User
+// @Success 				200 			{object}	resp.OkResponse{data=resp.User}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[get]
 func (api *User) GetOtherUserInfo(c *gin.Context) {
@@ -64,7 +64,7 @@ func (api *User) GetOtherUserInfo(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					params			body 		req.NewUserRequest	true		"添加用户"
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/new		[post]
 func (api *User) NewUser(c *gin.Context) {
@@ -95,7 +95,7 @@ func (api *User) NewUser(c *gin.Context) {
 // @Security				ApiKeyAuth
 // @Param					page 			query 		int			false		"页码"
 // @Param					size 			query 		int			false		"每页数量"
-// @Success 				200 			{array}		resp.User
+// @Success 				200 			{object}		resp.OkResponse{data=[]resp.User}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/list		[get]
 func (api *User) GetUserList(c *gin.Context) {
@@ -124,7 +124,7 @@ func (api *User) GetUserList(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					id				path		int			true		"用户id"
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[delete]
 func (api *User) DeleteUser(c *gin.Context) {
@@ -151,7 +151,7 @@ func (api *User) DeleteUser(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					info 			body		req.UpdateUserRequest			true		"新用户信息"
-// @Success 				200 			{object}	resp.User "更新后的用户信息"
+// @Success 				200 			{object}	resp.OkResponse{data=resp.User} "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user [post]
 func (api *User) UpdateSelfInfo(c *gin.Context) {
@@ -182,7 +182,7 @@ func (api *User) UpdateSelfInfo(c *gin.Context) {
 // @Security				ApiKeyAuth
 // @Param					id				path		int							true		"用户id"
 // @Param					info 			body		req.UpdateUserRequest			true		"新用户信息"
-// @Success 				200 			{object}	resp.User "更新后的用户信息"
+// @Success 				200 			{object}	resp.OkResponse{data=resp.User} "更新后的用户信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[post]
 func (api *User) UpdateUserInfo(c *gin.Context) {
@@ -214,7 +214,7 @@ func (api *User) UpdateUserInfo(c *gin.Context) {
 // @Security				ApiKeyAuth
 // @Param					id				path		int								false		"用户id"
 // @Param					info 			body		req.UpdateUserPassword			true		"新用户信息"
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/pwd [post]
 // @Router					/user/{id}/pwd [post]

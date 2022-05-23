@@ -19,7 +19,7 @@ type Public struct{}
 // @Accept					json
 // @Produce					json
 // @Param					params			body		req.LoginCredit		true	"登录凭据"
-// @Success 				200 			{object}	string
+// @Success 				200 			{object}	resp.OkResponse{data=string}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/login		 	[post]
 func (api *Public) Login(c *gin.Context) {
@@ -50,7 +50,7 @@ func (api *Public) Login(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Param					params			body		req.RegisterInfo		true	"注册信息"
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/register		[post]
 func (api *Public) Register(c *gin.Context) {

@@ -16,7 +16,7 @@ type Semester struct{}
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{array} resp.Semester
+// @Success 				200 			{object} 	resp.OkResponse{data=[]resp.Semester}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/semester [get]
 func (api *Semester) QuerySemester(c *gin.Context) {
@@ -40,7 +40,7 @@ func (api *Semester) QuerySemester(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					new				body	 req.Semester	true		"学期信息"
-// @Success 				200 			{object} resp.Semester "创建好的学期"
+// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} "创建好的学期"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/semester [post]
 func (api *Semester) CreateSemester(c *gin.Context) {
@@ -66,7 +66,7 @@ func (api *Semester) CreateSemester(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.Semester "当前学期"
+// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} "当前学期"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/semester/curr [get]
 func (api *Semester) GetCurrentSemester(c *gin.Context) {
@@ -88,7 +88,7 @@ func (api *Semester) GetCurrentSemester(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					id				body		req.IdReq		true		"学期id"
-// @Success 				200 			{object} 	resp.Semester 	"更新后的当前学期"
+// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} 	"更新后的当前学期"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/semester/curr [post]
 func (api *Semester) SetCurrentSemester(c *gin.Context) {

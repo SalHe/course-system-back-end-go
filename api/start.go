@@ -16,7 +16,7 @@ type Start struct{}
 // @Tags					初始化
 // @Accept					json
 // @Produce					json
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/init			[get]
 func (api *Start) IsInitialized(c *gin.Context) {
@@ -30,7 +30,7 @@ func (api *Start) IsInitialized(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Param					params			body		req.InitRequest		true	"初始化信息"
-// @Success 				200 			{object}	boolean
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/init			[post]
 func (api *Start) InitSystem(c *gin.Context) {

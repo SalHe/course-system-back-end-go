@@ -25,12 +25,12 @@ func (c *Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []
 		// TODO 待优化
 		query := ""
 		var args []interface{}
-		joinQuery := func(q string, arg interface{}) {
+		joinQuery := func(q string, arg ...interface{}) {
 			if len(query) > 0 {
 				query += " and "
 			}
 			query += q
-			args = append(args, arg)
+			args = append(args, arg...)
 		}
 		if q.Semester > 0 {
 			joinQuery("semester_id = ?", q.Semester)
@@ -38,7 +38,10 @@ func (c *Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []
 		if len(q.TeacherName) > 0 {
 			joinQuery("teacher_id in (?)", dao.DB.Table("users").Where("real_name like ?", "%"+q.TeacherName+"%").Select("id"))
 		}
-		if len(args) > 0 {
+		if q.OnlyLeftQuota {
+			joinQuery("quota_used < quota")
+		}
+		if len(query) > 0 {
 			fargs := append([]interface{}{}, query)
 			fargs = append(fargs, args...)
 			db = db.Preload("CourseSpecifics", fargs...).

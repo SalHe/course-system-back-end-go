@@ -5,10 +5,11 @@ import "github.com/se2022-qiaqia/course-system/dao"
 // QueryCoursesRequest 查询课程列表
 type QueryCoursesRequest struct {
 	Page
-	Name        string `json:"name" description:"课程名称"`          // 课程名称
-	Semester    uint   `json:"semester" description:"学期"`        // 学期id
-	TeacherName string `json:"teacherName" description:"教师名称"`   // 教师名称
-	CollegesId  []uint `json:"collegesId" description:"包含的学院id"` // 包含的学院id
+	Name          string `json:"name" description:"课程名称"`          // 课程名称
+	Semester      uint   `json:"semester" description:"学期"`        // 学期id
+	TeacherName   string `json:"teacherName" description:"教师名称"`   // 教师名称
+	CollegesId    []uint `json:"collegesId" description:"包含的学院id"` // 包含的学院id
+	OnlyLeftQuota bool   `json:"onlyLeftQuota" description:"仅有余量"` // 仅有余量
 }
 
 // NewCourseRequest 新增课程，对应于课程的公共信息部分。

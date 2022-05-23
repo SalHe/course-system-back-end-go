@@ -12,7 +12,7 @@ import (
 
 type Course struct{}
 
-func (c Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []*dao.CourseCommon, err error) {
+func (c *Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []*dao.CourseCommon, err error) {
 	db := dao.DB.Preload("CourseSpecifics").Preload("College").Model(&dao.CourseCommon{})
 	if len(q.Name) > 0 {
 		db = db.Where("name like (?)", "%"+q.Name+"%")
@@ -41,7 +41,7 @@ func (c Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []*
 	return
 }
 
-func (c Course) NewCourse(n req.NewCourseRequest) (courseCommon *dao.CourseCommon, err error) {
+func (c *Course) NewCourse(n req.NewCourseRequest) (courseCommon *dao.CourseCommon, err error) {
 	courseCommon = &dao.CourseCommon{
 		Name:      n.Name,
 		Credits:   n.Credits,
@@ -55,7 +55,7 @@ func (c Course) NewCourse(n req.NewCourseRequest) (courseCommon *dao.CourseCommo
 	return
 }
 
-func (c Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, err error) {
+func (c *Course) OpenCourse(o req.OpenCourseRequest) (course dao.CourseSpecific, err error) {
 	schedules := newDaoCourseSchedule(o.CourseSchedules)
 
 	course = dao.CourseSpecific{
@@ -96,7 +96,7 @@ func newDaoCourseSchedule(o []*req.CourseSchedule) []*dao.CourseSchedule {
 	return schedules
 }
 
-func (c Course) UpdateCourseCommon(id uint, b req.UpdateCourseCommonRequest) (*dao.CourseCommon, error) {
+func (c *Course) UpdateCourseCommon(id uint, b req.UpdateCourseCommonRequest) (*dao.CourseCommon, error) {
 	var course dao.CourseCommon
 	if err := dao.DB.Model(&dao.CourseCommon{}).Where("id = ?", id).First(&course).Error; err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (c Course) UpdateCourseCommon(id uint, b req.UpdateCourseCommonRequest) (*d
 	return &course, nil
 }
 
-func (c Course) UpdateCourseSpecific(u uint, b req.UpdateCourseSpecificRequest) (*dao.CourseSpecific, error) {
+func (c *Course) UpdateCourseSpecific(u uint, b req.UpdateCourseSpecificRequest) (*dao.CourseSpecific, error) {
 	var course dao.CourseSpecific
 	if err := dao.DB.Model(&dao.CourseSpecific{}).Where("id = ?", u).First(&course).Error; err != nil {
 		return nil, err

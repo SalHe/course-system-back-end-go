@@ -36,6 +36,10 @@ func (c Course) Init(Router *gin.RouterGroup) {
 		ar.PUT("/:id", api.Api.Course.UpdateCourseCommon)
 		ar.PUT("/spec/:id", api.Api.Course.UpdateCourseSpecific)
 		ar.POST("/open", api.Api.Course.OpenCourse)
-
+	}
+	{
+		atr := r.Group("")
+		atr.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin, dao.RoleTeacher))
+		atr.GET("/spec/:id", api.Api.Course.GetCourseSpecificDetails)
 	}
 }

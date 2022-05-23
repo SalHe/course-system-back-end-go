@@ -49,7 +49,7 @@ type StudentCourse struct {
 	CourseId     uint           // 课程ID
 	Course       CourseSpecific `gorm:"foreignKey:CourseId"` // 具体课程
 	CourseStatus CourseStatus   // 课程状态
-	Score        uint           // 学生成绩
+	Score        float32        // 学生成绩
 }
 
 type CourseScheduleWithCourseSpecific struct {
@@ -64,4 +64,9 @@ func CourseSchedule_CourseSpecific_Student(tx *gorm.DB) *gorm.DB {
 		Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id").
 		Joins("JOIN course_specifics ON course_specifics.id = course_specific_id AND semester_id").
 		Select("course_schedules.*, course_specific_course_schedule.course_specific_id")
+}
+
+type CourseSpecificWithStudent struct {
+	CourseSpecific
+	StudentCourses []*StudentCourse `gorm:"many2many:student_courses;"`
 }

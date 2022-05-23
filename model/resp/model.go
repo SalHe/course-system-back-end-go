@@ -148,3 +148,15 @@ type CourseScheduleWithCourseSpecific struct {
 	CourseSchedule
 	*CourseSpecific
 }
+
+// StudentCourse 学生和具体某门课的关系
+type StudentCourse struct {
+	Student      *User            `json:"student"` // 学生
+	CourseStatus dao.CourseStatus `json:"status"`  // 课程状态
+	Score        float32          `json:"score"`   // 学生成绩
+}
+
+type CourseSpecificWithStudent struct {
+	*CourseSpecific
+	Students []*StudentCourse `json:"students"`
+}

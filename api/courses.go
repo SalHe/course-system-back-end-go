@@ -355,3 +355,40 @@ func (api *Course) GetCourseSchedules(c *gin.Context) {
 		return
 	}
 }
+
+// GetCourseSpecificDetails
+// @Summary					查询课头详细信息。
+// @Description
+// @Tags					课程
+// @Accept					json
+// @Produce					json
+// @Param 					id				path		int 							true 	"课头ID"
+// @Security				ApiKeyAuth
+// @Success 				200 			{array} 	resp.CourseCommon	"更新后的课程信息"
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/course/spec/{id} 	[get]
+func (api *Course) GetCourseSpecificDetails(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	if details, err := S.Services.Course.GetCourseSpecificDetails(uint(id)); err == nil {
+		students := make([]*resp.StudentCourse, len(details.StudentCourses))
+		for i, studentCourse := range details.StudentCourses {
+			students[i] = &resp.StudentCourse{
+				Student:      resp.NewUser(&studentCourse.Student),
+				CourseStatus: studentCourse.CourseStatus,
+				Score:        studentCourse.Score,
+			}
+		}
+		resp.Ok(&resp.CourseSpecificWithStudent{
+			CourseSpecific: resp.NewCourseSpecific(&details.CourseSpecific),
+			Students:       students,
+		}, c)
+		return
+	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
+		resp.Fail(resp.ErrCodeNotFound, "未找到对应课头", c)
+		return
+	} else {
+		resp.FailJust("查询课头失败", c)
+		return
+	}
+}

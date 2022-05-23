@@ -328,3 +328,25 @@ func (c *Course) GetTeacherSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseS
 	}
 	return schedules, nil
 }
+
+func (c *Course) GetCourseSpecificDetails(id uint) (*dao.CourseSpecificWithStudent, error) {
+	var res dao.CourseSpecificWithStudent
+	if err := dao.DB.Preload(clause.Associations).
+		Preload("CourseCommon.College").
+		Preload("Teacher.College").
+		Model(&dao.CourseSpecific{}).
+		Where("id = ?", id).
+		First(&res.CourseSpecific).Error; err != nil {
+		return nil, err
+	}
+
+	if err := dao.DB.Model(&dao.StudentCourse{}).
+		Preload(clause.Associations).
+		Preload("Student."+clause.Associations).
+		Where("course_id = ?", id).
+		Find(&res.StudentCourses).Error; err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}

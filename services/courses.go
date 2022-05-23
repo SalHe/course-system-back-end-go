@@ -12,7 +12,7 @@ import (
 
 type Course struct{}
 
-func (c Course) Query(q req.QueryCoursesRequest) (courseCommons []*dao.CourseCommon, err error) {
+func (c Course) Query(q req.QueryCoursesRequest) (count int64, courseCommons []*dao.CourseCommon, err error) {
 	db := dao.DB.Preload("CourseSpecifics").Preload("College").Model(&dao.CourseCommon{})
 	if len(q.Name) > 0 {
 		db = db.Where("name like (?)", "%"+q.Name+"%")
@@ -36,6 +36,7 @@ func (c Course) Query(q req.QueryCoursesRequest) (courseCommons []*dao.CourseCom
 		}
 	}
 
+	db.Count(&count)
 	err = db.Offset(q.Offset()).Limit(q.ActualSize()).Find(&courseCommons).Error
 	return
 }

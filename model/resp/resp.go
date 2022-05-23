@@ -16,6 +16,13 @@ type OkResponse struct {
 	Data interface{} `json:"data"`
 }
 
+type Page struct {
+	PageNo   int         `json:"pageNo"`
+	PageSize int         `json:"pageSize"`
+	Total    int64       `json:"total"`
+	Contents interface{} `json:"contents"`
+}
+
 type ErrCode int
 
 const (
@@ -49,4 +56,13 @@ func Fail(errCode ErrCode, msg string, c *gin.Context) {
 		Msg:  msg,
 		Code: errCode,
 	})
+}
+
+func OkPage(data interface{}, pageNo int, pageSize int, total int64, c *gin.Context) {
+	Resp(Page{
+		PageNo:   pageNo,
+		PageSize: pageSize,
+		Total:    total,
+		Contents: data,
+	}, "ok", c)
 }

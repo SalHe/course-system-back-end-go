@@ -93,22 +93,25 @@ func (api *User) NewUser(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Param					page 			query 		int			false		"页码"
-// @Param					size 			query 		int			false		"每页数量"
-// @Success 				200 			{object}		resp.OkResponse{data=[]resp.User}
-// @Failure 				400 			{object} 	resp.ErrorResponse
-// @Router					/user/list		[get]
+// @Param					page			body			req.Page			false	"分页"
+// @Success 				200 			{object}		resp.OkResponse{data=resp.Page{contents=[]resp.User}}
+// @Failure 				400 			{object} 		resp.ErrorResponse
+// @Router					/user/list		[post]
 func (api *User) GetUserList(c *gin.Context) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	size, _ := strconv.Atoi(c.DefaultQuery("size", "10"))
+	var b req.Page
+	if !req.BindAndValidate(c, &b) {
+		return
+	}
 
-	users, err := S.Services.User.GetUserList(req.Page{Page: page, Size: size})
+	count := S.Services.User.GetUserCount()
+
+	users, err := S.Services.User.GetUserList(b)
 	if err == nil {
 		usersResp := make([]*resp.User, len(users))
 		for i, user := range users {
 			usersResp[i] = resp.NewUser(&user)
 		}
-		resp.Ok(usersResp, c)
+		resp.OkPage(usersResp, b.ActualPage(), b.ActualSize(), count, c)
 		return
 	} else {
 		resp.Fail(resp.ErrCodeNotFound, "未找到用户列表", c)

@@ -22,7 +22,7 @@ func (s User) Init(Router *gin.RouterGroup) {
 		publicRouter.POST("/pwd", api.Api.User.UpdatePassword)
 	}
 	{
-		privateRouter.GET("/list", api.Api.User.GetUserList)
+		privateRouter.POST("/list", api.Api.User.GetUserList)
 		privateRouter.GET("/:id", api.Api.User.GetOtherUserInfo)
 		privateRouter.POST("/:id", api.Api.User.UpdateUserInfo)
 		privateRouter.DELETE("/:id", api.Api.User.DeleteUser)

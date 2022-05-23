@@ -34,7 +34,7 @@ func (api *Course) GetCourseList(c *gin.Context) {
 		return
 	}
 
-	if courseCommons, err := S.Services.Course.Query(b); err != nil {
+	if total, courseCommons, err := S.Services.Course.Query(b); err != nil {
 		resp.FailJust("查询失败", c)
 		return
 	} else {
@@ -42,7 +42,7 @@ func (api *Course) GetCourseList(c *gin.Context) {
 		for i, courseCommon := range courseCommons {
 			results[i] = resp.NewCourseCommonWithSpecifics(courseCommon)
 		}
-		resp.Ok(results, c)
+		resp.OkPage(results, b.Page.ActualPage(), b.Page.ActualSize(), total, c)
 		return
 	}
 }

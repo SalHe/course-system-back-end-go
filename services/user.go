@@ -41,6 +41,12 @@ func (u *User) NewUser(b req.NewUserRequest) error {
 	}
 }
 
+func (u *User) GetUserCount() int64 {
+	var count int64
+	dao.DB.Model(&dao.User{}).Count(&count)
+	return count
+}
+
 func (u *User) GetUserList(pageInfo req.Page) ([]dao.User, error) {
 	var users []dao.User
 	if err := dao.DB.Preload(clause.Associations).Offset(pageInfo.Offset()).Limit(pageInfo.ActualSize()).Find(&users).Error; err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
@@ -91,6 +92,14 @@ func createServer() *http.Server {
 	baseEngine := gin.New()
 
 	logger := log.L
+	baseEngine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}))
 	baseEngine.Use(middleware.LoggerWithZerolog(logger))
 	baseEngine.Use(middleware.RecoveryWithZerolog(logger, true, config.Config.Debug))
 

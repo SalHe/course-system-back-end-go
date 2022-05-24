@@ -15,14 +15,14 @@ type Role = uint
 type CourseStatus = uint
 
 const (
-	RoleStudent = Role(iota)
-	RoleTeacher
-	RoleAdmin
+	RoleStudent = Role(0)
+	RoleTeacher = Role(100)
+	RoleAdmin   = Role(200)
 )
 
 const (
-	CourseStatusNormal   = CourseStatus(iota) // 正常（已选上，正常上课中）
-	CourseStatusWithdraw                      // 撤销（已退课）
+	CourseStatusNormal   = CourseStatus(0)   // 正常（已选上，正常上课中）
+	CourseStatusWithdraw = CourseStatus(100) // 撤销（已退课）
 	// CourseStatusClosed                        // 已结课
 	// 结课状态应该表示在课程中，而不是`学生-课程`中
 )

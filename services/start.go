@@ -22,7 +22,7 @@ func (s *Start) InitSystem(b req.InitRequest) error {
 			return ErrInvalidParams
 		}
 
-		var adminCollegeName = "_____ADMIN"
+		var adminCollegeName = "<未分配学院>"
 
 		user := &dao.User{
 			Model:    dao.Model{ID: b.Id},

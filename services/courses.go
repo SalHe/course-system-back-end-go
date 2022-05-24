@@ -186,7 +186,7 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 	var studentCourse dao.StudentCourse
 	err := dao.DB.Table("student_courses").
 		Select("student_courses.*").
-		Joins("JOIN course_specifics ON course_specifics.id = student_courses.id").
+		Joins("JOIN course_specifics ON course_specifics.id = student_courses.course_id").
 		Where("student_courses.student_id = ? AND course_specifics.course_common_id = ?", b.StudentId, course.CourseCommonId).
 		First(&studentCourse).Error
 	if studentCourse.CourseStatus == dao.CourseStatusWithdraw || errors.Is(err, gorm.ErrRecordNotFound) {

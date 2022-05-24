@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/dao"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
@@ -56,6 +57,11 @@ func (api *Public) Login(c *gin.Context) {
 func (api *Public) Register(c *gin.Context) {
 	var b req.RegisterInfo
 	if !req.BindAndValidate(c, &b) {
+		return
+	}
+
+	if err := dao.DB.Model(&dao.College{}).Where("id = ?", b.CollegeId).First(&dao.College{}).Error; err != nil {
+		resp.Fail(resp.ErrCodeNotFound, "找不到对应学院", c)
 		return
 	}
 

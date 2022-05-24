@@ -28,7 +28,9 @@ func (p *Public) Register(b req.RegisterInfo) (bool, error) {
 			Model: dao.Model{
 				ID: b.Id,
 			},
-			Username: b.Username,
+			Username:  b.Username,
+			RealName:  b.RealName,
+			CollegeId: b.CollegeId,
 		}
 		user.SetPassword(b.Password)
 		if err = dao.DB.Create(&user).Error; err != nil {

@@ -6,9 +6,11 @@ type LoginCredit struct {
 }
 
 type RegisterInfo struct {
-	Username string `json:"username" binding:"required,username" description:"用户名"`
-	Password string `json:"password" binding:"required,password" description:"密码"`
-	Id       uint   `json:"id"`
+	Username  string `json:"username" binding:"required,username" description:"用户名"`
+	Password  string `json:"password" binding:"required,password" description:"密码"`
+	CollegeId uint   `json:"collegeId" binding:"required" description:"学院id"`
+	RealName  string `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`
+	Id        uint   `json:"id"`
 }
 
 // InitRequest 初始化系统参数

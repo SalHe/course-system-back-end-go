@@ -189,7 +189,7 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 		Joins("JOIN course_specifics ON course_specifics.id = student_courses.course_id").
 		Where("student_courses.student_id = ? AND course_specifics.course_common_id = ?", b.StudentId, course.CourseCommonId).
 		First(&studentCourse).Error
-	if studentCourse.CourseStatus == dao.CourseStatusWithdraw || errors.Is(err, gorm.ErrRecordNotFound) {
+	if studentCourse.CourseId != b.CourseId || studentCourse.CourseStatus == dao.CourseStatusWithdraw || errors.Is(err, gorm.ErrRecordNotFound) {
 		// 对应课程未选或已撤掉
 
 		if !operator.IsAdmin() {
@@ -227,7 +227,7 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 
 		// 权限足、没选过、余量足、不冲突
 		if err := dao.DB.Transaction(func(tx *gorm.DB) error {
-			if studentCourse.ID > 0 {
+			if studentCourse.ID > 0 && studentCourse.CourseId == b.CourseId {
 				studentCourse.CourseStatus = dao.CourseStatusNormal
 				if err := tx.Save(&studentCourse).Error; err != nil {
 					return err

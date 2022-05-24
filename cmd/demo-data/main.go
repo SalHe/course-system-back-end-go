@@ -56,6 +56,7 @@ func main() {
 		Username:     "admin",
 		RealName:     "关丽媛",
 		College:      collegeAnonymous,
+		Role:         dao.RoleAdmin,
 		EntranceYear: 2000,
 	}
 	adminDefault.SetPassword("hello-admin")

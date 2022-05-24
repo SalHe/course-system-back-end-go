@@ -233,6 +233,9 @@ func (api *Course) SelectCourse(c *gin.Context) {
 	} else if errors.Is(err, S.ErrConflict) {
 		resp.Fail(resp.ErrCodeConflict, "课程与当前课表时间冲突，或者您已选该课头", c)
 		return
+	} else if errors.Is(err, S.ErrSameCourseCommon) {
+		resp.Fail(resp.ErrCodeConflict, "您已选择同课程的课头", c)
+		return
 	}
 
 	resp.FailJust("选课失败", c)

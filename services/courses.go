@@ -184,11 +184,26 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 	}
 
 	var studentCourse dao.StudentCourse
+	var scs []*dao.StudentCourse
 	err := dao.DB.Table("student_courses").
 		Select("student_courses.*").
 		Joins("JOIN course_specifics ON course_specifics.id = student_courses.course_id").
 		Where("student_courses.student_id = ? AND course_specifics.course_common_id = ?", b.StudentId, course.CourseCommonId).
-		First(&studentCourse).Error
+		Find(&scs).Error
+	if len(scs) > 0 {
+		studentCourse = *scs[0]
+		for _, sc := range scs {
+			if sc.CourseId == b.CourseId {
+				studentCourse = *sc
+				break
+			}
+		}
+		// 这里 studentCourse 可能是与指定课头同课程的另一课头
+		if studentCourse.CourseId != b.CourseId && studentCourse.CourseStatus == dao.CourseStatusNormal {
+			return nil, ErrSameCourseCommon
+		}
+	}
+
 	if studentCourse.CourseId != b.CourseId || studentCourse.CourseStatus == dao.CourseStatusWithdraw || errors.Is(err, gorm.ErrRecordNotFound) {
 		// 对应课程未选或已撤掉
 

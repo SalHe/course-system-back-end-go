@@ -10,10 +10,10 @@ type CourseCommon struct {
 	Credits float32 // 学分
 	Hours   uint    // 学时，单位不一定是小时
 
-	CollegeId uint    `gorm:"not null"` // 开课学院ID
-	College   College // 开课学院
+	CollegeId uint     `gorm:"not null"` // 开课学院ID
+	College   *College // 开课学院
 
-	CourseSpecifics []CourseSpecific // 课程具体信息
+	CourseSpecifics []*CourseSpecific // 课程具体信息
 }
 
 // CourseSpecific 具体课头，指具体开给某一个老师的课程
@@ -21,14 +21,14 @@ type CourseCommon struct {
 type CourseSpecific struct {
 	Model
 	CourseCommonId  uint              `gorm:"not null"` // 课程公共信息ID
-	CourseCommon    CourseCommon      // 课程公共信息
+	CourseCommon    *CourseCommon     // 课程公共信息
 	TeacherId       uint              `gorm:"not null"`             // 授课教师ID
-	Teacher         User              `gorm:"foreignKey:TeacherId"` // 授课教师
+	Teacher         *User             `gorm:"foreignKey:TeacherId"` // 授课教师
 	Location        string            // 上课地点
 	Quota           uint              // 人数配额
 	QuotaUsed       uint              // 课程已选人数
 	SemesterId      uint              // 学期ID
-	Semester        Semester          // 学期
+	Semester        *Semester         // 学期
 	CourseSchedules []*CourseSchedule `gorm:"many2many:course_specific_course_schedule;"`
 }
 
@@ -45,12 +45,12 @@ type CourseSchedule struct {
 // StudentCourse 学生和具体某门课的关系
 type StudentCourse struct {
 	Model
-	StudentId    uint           // 学生ID
-	Student      User           `gorm:"foreignKey:StudentId"` // 学生
-	CourseId     uint           // 课程ID
-	Course       CourseSpecific `gorm:"foreignKey:CourseId"` // 具体课程
-	CourseStatus CourseStatus   // 课程状态
-	Score        float32        // 学生成绩
+	StudentId    uint            // 学生ID
+	Student      User            `gorm:"foreignKey:StudentId"` // 学生
+	CourseId     uint            // 课程ID
+	Course       *CourseSpecific `gorm:"foreignKey:CourseId"` // 具体课程
+	CourseStatus CourseStatus    // 课程状态
+	Score        float32         // 学生成绩
 }
 
 type CourseScheduleWithCourseSpecific struct {

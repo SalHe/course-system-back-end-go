@@ -32,7 +32,7 @@ func main() {
 		return
 	}
 
-	collegeAnonymous := dao.College{
+	collegeAnonymous := &dao.College{
 		Model: dao.Model{
 			ID: 1,
 		},
@@ -64,98 +64,98 @@ func main() {
 		Username:     "math-teacher1",
 		RealName:     "数学教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeMath,
+		College:      collegeMath,
 		EntranceYear: 2019,
 	}
 	teacherMath2 := &dao.User{
 		Username:     "math-teacher2",
 		RealName:     "数学教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeMath,
+		College:      collegeMath,
 		EntranceYear: 2019,
 	}
 	teacherPhysical1 := &dao.User{
 		Username:     "physical-teacher1",
 		RealName:     "物理教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegePhysical,
+		College:      collegePhysical,
 		EntranceYear: 2019,
 	}
 	teacherPhysical2 := &dao.User{
 		Username:     "physical-teacher2",
 		RealName:     "物理教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegePhysical,
+		College:      collegePhysical,
 		EntranceYear: 2019,
 	}
 	teacherChemistry1 := &dao.User{
 		Username:     "chemistry-teacher1",
 		RealName:     "化学教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeChemistry,
+		College:      collegeChemistry,
 		EntranceYear: 2019,
 	}
 	teacherChemistry2 := &dao.User{
 		Username:     "chemistry-teacher2",
 		RealName:     "化学教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeChemistry,
+		College:      collegeChemistry,
 		EntranceYear: 2019,
 	}
 	teacherBiology1 := &dao.User{
 		Username:     "biology-teacher1",
 		RealName:     "生物教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeBiology,
+		College:      collegeBiology,
 		EntranceYear: 2019,
 	}
 	teacherBiology2 := &dao.User{
 		Username:     "biology-teacher2",
 		RealName:     "生物教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeBiology,
+		College:      collegeBiology,
 		EntranceYear: 2019,
 	}
 	teacherComputerScience1 := &dao.User{
 		Username:     "computer-science-teacher1",
 		RealName:     "计算机科学教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeComputerScience,
+		College:      collegeComputerScience,
 		EntranceYear: 2019,
 	}
 	teacherComputerScience2 := &dao.User{
 		Username:     "computer-science-teacher2",
 		RealName:     "计算机科学教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeComputerScience,
+		College:      collegeComputerScience,
 		EntranceYear: 2019,
 	}
 	teacherSoftwareEngineering1 := &dao.User{
 		Username:     "software-engineering-teacher1",
 		RealName:     "软件工程教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeSoftwareEngineering,
+		College:      collegeSoftwareEngineering,
 		EntranceYear: 2019,
 	}
 	teacherSoftwareEngineering2 := &dao.User{
 		Username:     "software-engineering-teacher2",
 		RealName:     "软件工程教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeSoftwareEngineering,
+		College:      collegeSoftwareEngineering,
 		EntranceYear: 2019,
 	}
 	teacherElectronicEngineering1 := &dao.User{
 		Username:     "electronic-engineering-teacher1",
 		RealName:     "电子工程教师1",
 		Role:         dao.RoleTeacher,
-		College:      *collegeElectronicEngineering,
+		College:      collegeElectronicEngineering,
 		EntranceYear: 2019,
 	}
 	teacherElectronicEngineering2 := &dao.User{
 		Username:     "electronic-engineering-teacher2",
 		RealName:     "电子工程教师2",
 		Role:         dao.RoleTeacher,
-		College:      *collegeElectronicEngineering,
+		College:      collegeElectronicEngineering,
 		EntranceYear: 2019,
 	}
 	teacherBatch := []*dao.User{
@@ -176,91 +176,91 @@ func main() {
 		Name:    "高等数学",
 		Credits: 5,
 		Hours:   60,
-		College: *collegeMath,
+		College: collegeMath,
 	}
 	ccLinearAlgebra := &dao.CourseCommon{
 		Name:    "线性代数",
 		Credits: 3,
 		Hours:   60,
-		College: *collegeMath,
+		College: collegeMath,
 	}
 	ccProbabilityTheory := &dao.CourseCommon{
 		Name:    "概率论与数理统计",
 		Credits: 3,
 		Hours:   60,
-		College: *collegeMath,
+		College: collegeMath,
 	}
 	ccUniversityPhysics := &dao.CourseCommon{
 		Name:    "大学物理",
 		Credits: 5,
 		Hours:   60,
-		College: *collegePhysical,
+		College: collegePhysical,
 	}
 	ccQuantumPhysics := &dao.CourseCommon{
 		Name:    "量子物理",
 		Credits: 3,
 		Hours:   60,
-		College: *collegePhysical,
+		College: collegePhysical,
 	}
 	ccOrganicChemistry := &dao.CourseCommon{
 		Name:    "有机化学",
 		Credits: 3,
 		Hours:   60,
-		College: *collegeChemistry,
+		College: collegeChemistry,
 	}
 	ccInorganicChemistry := &dao.CourseCommon{
 		Name:    "无机化学",
 		Credits: 3,
 		Hours:   60,
-		College: *collegeChemistry,
+		College: collegeChemistry,
 	}
 	ccUniversityBiology := &dao.CourseCommon{
 		Name:    "大学生物",
 		Credits: 2,
 		Hours:   60,
-		College: *collegeBiology,
+		College: collegeBiology,
 	}
 	ccComputerScienceIntro := &dao.CourseCommon{
 		Name:    "计算机科学导论",
 		Credits: 3,
 		Hours:   48,
-		College: *collegeComputerScience,
+		College: collegeComputerScience,
 	}
 	ccEmbeddedSystem := &dao.CourseCommon{
 		Name:    "嵌入式系统",
 		Credits: 3.5,
 		Hours:   48,
-		College: *collegeComputerScience,
+		College: collegeComputerScience,
 	}
 	ccDataStructureForCS := &dao.CourseCommon{
 		Name:    "数据结构",
 		Credits: 3.5,
 		Hours:   48,
-		College: *collegeComputerScience,
+		College: collegeComputerScience,
 	}
 	ccDataStructureForSE := &dao.CourseCommon{
 		Name:    "数据结构",
 		Credits: 3,
 		Hours:   48,
-		College: *collegeSoftwareEngineering,
+		College: collegeSoftwareEngineering,
 	}
 	ccJavaEE := &dao.CourseCommon{
 		Name:    "JavaEE企业级应用开发",
 		Credits: 3,
 		Hours:   48,
-		College: *collegeSoftwareEngineering,
+		College: collegeSoftwareEngineering,
 	}
 	ccCircuitAnalysis := &dao.CourseCommon{
 		Name:    "电路分析",
 		Credits: 3,
 		Hours:   48,
-		College: *collegeElectronicEngineering,
+		College: collegeElectronicEngineering,
 	}
 	ccDigitalElectronics := &dao.CourseCommon{
 		Name:    "数字电子技术",
 		Credits: 3,
 		Hours:   48,
-		College: *collegeElectronicEngineering,
+		College: collegeElectronicEngineering,
 	}
 	ccBatch := []*dao.CourseCommon{
 		ccAdvancedMath, ccLinearAlgebra, ccProbabilityTheory,
@@ -279,12 +279,12 @@ func main() {
 	services.Services.Setting.Set(services.KeyCurrentSemester, strconv.Itoa(int(semester.ID)))
 
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccAdvancedMath,
-		Teacher:      *teacherMath1,
+		CourseCommon: ccAdvancedMath,
+		Teacher:      teacherMath1,
 		Location:     "A105",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   3,
@@ -303,12 +303,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccAdvancedMath,
-		Teacher:      *teacherMath2,
+		CourseCommon: ccAdvancedMath,
+		Teacher:      teacherMath2,
 		Location:     "A106",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   3,
@@ -327,12 +327,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccAdvancedMath,
-		Teacher:      *teacherMath2,
+		CourseCommon: ccAdvancedMath,
+		Teacher:      teacherMath2,
 		Location:     "A106",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -351,12 +351,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccLinearAlgebra,
-		Teacher:      *teacherMath1,
+		CourseCommon: ccLinearAlgebra,
+		Teacher:      teacherMath1,
 		Location:     "A105",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -375,12 +375,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccLinearAlgebra,
-		Teacher:      *teacherMath2,
+		CourseCommon: ccLinearAlgebra,
+		Teacher:      teacherMath2,
 		Location:     "A105",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -392,12 +392,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccProbabilityTheory,
-		Teacher:      *teacherMath1,
+		CourseCommon: ccProbabilityTheory,
+		Teacher:      teacherMath1,
 		Location:     "A105",
 		Quota:        80,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -409,12 +409,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccUniversityPhysics,
-		Teacher:      *teacherPhysical1,
+		CourseCommon: ccUniversityPhysics,
+		Teacher:      teacherPhysical1,
 		Location:     "B105",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -426,12 +426,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccUniversityPhysics,
-		Teacher:      *teacherPhysical2,
+		CourseCommon: ccUniversityPhysics,
+		Teacher:      teacherPhysical2,
 		Location:     "B105",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -443,12 +443,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccQuantumPhysics,
-		Teacher:      *teacherPhysical2,
+		CourseCommon: ccQuantumPhysics,
+		Teacher:      teacherPhysical2,
 		Location:     "B106",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   1,
@@ -460,12 +460,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccQuantumPhysics,
-		Teacher:      *teacherPhysical1,
+		CourseCommon: ccQuantumPhysics,
+		Teacher:      teacherPhysical1,
 		Location:     "B104",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   1,
@@ -477,12 +477,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccOrganicChemistry,
-		Teacher:      *teacherChemistry1,
+		CourseCommon: ccOrganicChemistry,
+		Teacher:      teacherChemistry1,
 		Location:     "A204",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   1,
@@ -494,12 +494,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccOrganicChemistry,
-		Teacher:      *teacherChemistry2,
+		CourseCommon: ccOrganicChemistry,
+		Teacher:      teacherChemistry2,
 		Location:     "A203",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -511,12 +511,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccInorganicChemistry,
-		Teacher:      *teacherChemistry1,
+		CourseCommon: ccInorganicChemistry,
+		Teacher:      teacherChemistry1,
 		Location:     "A204",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   1,
@@ -528,12 +528,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccInorganicChemistry,
-		Teacher:      *teacherChemistry2,
+		CourseCommon: ccInorganicChemistry,
+		Teacher:      teacherChemistry2,
 		Location:     "A203",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   2,
@@ -545,12 +545,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccUniversityBiology,
-		Teacher:      *teacherBiology1,
+		CourseCommon: ccUniversityBiology,
+		Teacher:      teacherBiology1,
 		Location:     "A207",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   5,
@@ -562,12 +562,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccComputerScienceIntro,
-		Teacher:      *teacherComputerScience1,
+		CourseCommon: ccComputerScienceIntro,
+		Teacher:      teacherComputerScience1,
 		Location:     "A208",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   5,
@@ -579,12 +579,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccComputerScienceIntro,
-		Teacher:      *teacherComputerScience2,
+		CourseCommon: ccComputerScienceIntro,
+		Teacher:      teacherComputerScience2,
 		Location:     "A209",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   5,
@@ -596,12 +596,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccDataStructureForCS,
-		Teacher:      *teacherComputerScience1,
+		CourseCommon: ccDataStructureForCS,
+		Teacher:      teacherComputerScience1,
 		Location:     "A208",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   5,
@@ -613,12 +613,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccDataStructureForCS,
-		Teacher:      *teacherComputerScience2,
+		CourseCommon: ccDataStructureForCS,
+		Teacher:      teacherComputerScience2,
 		Location:     "A208",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   4,
@@ -630,12 +630,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccEmbeddedSystem,
-		Teacher:      *teacherComputerScience2,
+		CourseCommon: ccEmbeddedSystem,
+		Teacher:      teacherComputerScience2,
 		Location:     "A208",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   3,
@@ -647,12 +647,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccJavaEE,
-		Teacher:      *teacherSoftwareEngineering1,
+		CourseCommon: ccJavaEE,
+		Teacher:      teacherSoftwareEngineering1,
 		Location:     "A310",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   3,
@@ -664,12 +664,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccJavaEE,
-		Teacher:      *teacherSoftwareEngineering2,
+		CourseCommon: ccJavaEE,
+		Teacher:      teacherSoftwareEngineering2,
 		Location:     "A311",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   3,
@@ -681,12 +681,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccCircuitAnalysis,
-		Teacher:      *teacherElectronicEngineering1,
+		CourseCommon: ccCircuitAnalysis,
+		Teacher:      teacherElectronicEngineering1,
 		Location:     "A302",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   4,
@@ -698,12 +698,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccCircuitAnalysis,
-		Teacher:      *teacherElectronicEngineering2,
+		CourseCommon: ccCircuitAnalysis,
+		Teacher:      teacherElectronicEngineering2,
 		Location:     "A303",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   4,
@@ -715,12 +715,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccDigitalElectronics,
-		Teacher:      *teacherElectronicEngineering1,
+		CourseCommon: ccDigitalElectronics,
+		Teacher:      teacherElectronicEngineering1,
 		Location:     "A302",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   4,
@@ -732,12 +732,12 @@ func main() {
 		},
 	})
 	dao.DB.Create(&dao.CourseSpecific{
-		CourseCommon: *ccDigitalElectronics,
-		Teacher:      *teacherElectronicEngineering2,
+		CourseCommon: ccDigitalElectronics,
+		Teacher:      teacherElectronicEngineering2,
 		Location:     "A303",
 		Quota:        40,
 		QuotaUsed:    0,
-		Semester:     *semester,
+		Semester:     semester,
 		CourseSchedules: []*dao.CourseSchedule{
 			{
 				DayOfWeek:   4,

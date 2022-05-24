@@ -29,7 +29,7 @@ func (s *Start) InitSystem(b req.InitRequest) error {
 			Username: b.Username,
 			RealName: b.RealName,
 			Role:     dao.RoleAdmin,
-			College: dao.College{
+			College: &dao.College{
 				Name: adminCollegeName,
 			},
 		}

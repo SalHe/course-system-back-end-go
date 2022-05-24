@@ -17,7 +17,7 @@ func NewUser(user *dao.User) *User {
 		Username:     user.Username,
 		RealName:     user.RealName,
 		Role:         user.Role,
-		College:      *NewCollege(&user.College),
+		College:      *NewCollege(user.College),
 		EntranceYear: user.EntranceYear,
 	}
 }
@@ -50,7 +50,7 @@ func NewCourseCommon(course *dao.CourseCommon) *CourseCommon {
 		Name:    course.Name,
 		Credits: course.Credits,
 		Hours:   course.Hours,
-		College: *NewCollege(&course.College),
+		College: *NewCollege(course.College),
 	}
 }
 
@@ -63,7 +63,7 @@ type CourseCommonWithSpecifics struct {
 func NewCourseCommonWithSpecifics(course *dao.CourseCommon) *CourseCommonWithSpecifics {
 	specifics := make([]CourseSpecificWithoutCommon, len(course.CourseSpecifics))
 	for i, specific := range course.CourseSpecifics {
-		specifics[i] = *NewCourseSpecificWithoutCommon(&specific)
+		specifics[i] = *NewCourseSpecificWithoutCommon(specific)
 	}
 	return &CourseCommonWithSpecifics{
 		Model:           course.Model,
@@ -89,11 +89,11 @@ func NewCourseSpecificWithoutCommon(course *dao.CourseSpecific) *CourseSpecificW
 	}
 	return &CourseSpecificWithoutCommon{
 		Model:           course.Model,
-		Teacher:         *NewUser(&course.Teacher),
+		Teacher:         *NewUser(course.Teacher),
 		Location:        course.Location,
 		Quota:           course.Quota,
 		QuotaUsed:       course.QuotaUsed,
-		Semester:        *NewSemester(&course.Semester),
+		Semester:        *NewSemester(course.Semester),
 		CourseSchedules: schedules,
 	}
 }
@@ -106,7 +106,7 @@ type CourseSpecific struct {
 func NewCourseSpecific(course *dao.CourseSpecific) *CourseSpecific {
 	return &CourseSpecific{
 		CourseSpecificWithoutCommon: *NewCourseSpecificWithoutCommon(course),
-		CourseCommon:                *NewCourseCommon(&course.CourseCommon),
+		CourseCommon:                *NewCourseCommon(course.CourseCommon),
 	}
 }
 

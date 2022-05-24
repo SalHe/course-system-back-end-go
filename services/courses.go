@@ -307,7 +307,7 @@ func (c *Course) GetStudentSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseS
 	}
 	tx = tx.Select("course_schedules.*, course_specific_course_schedule.course_specific_id")
 
-	tx = tx.Where("student_id = ?", b.UserId)
+	tx = tx.Where("student_id = ? AND student_courses.course_status in (?)", b.UserId, []dao.CourseStatus{dao.CourseStatusNormal})
 
 	var schedules []*dao.CourseScheduleWithCourseSpecific
 	if err := tx.Preload(clause.Associations).

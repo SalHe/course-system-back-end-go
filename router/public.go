@@ -18,4 +18,8 @@ func (p Public) Init(r *gin.RouterGroup) {
 	ar := r.Group("")
 	ar.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
 	ar.POST("/register/enable", api.Api.Public.EnableRegister)
+
+	r.Group("").
+		Use(middleware.AuthorizedRequired).
+		GET("/logout", api.Api.Public.Logout)
 }

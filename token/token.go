@@ -59,6 +59,10 @@ func NewToken(user *dao.User) string {
 	return token
 }
 
+func DeleteToken(token string) {
+	Storage.Delete(token)
+}
+
 func md5Hash(content string) string {
 	b := md5.Sum([]byte(content))
 	token := md5.Sum([]byte(string(b[:]) + "hellasdgasjdYGSDsayufas"))

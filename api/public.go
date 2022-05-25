@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"github.com/se2022-qiaqia/course-system/middleware"
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"github.com/se2022-qiaqia/course-system/model/resp"
 	S "github.com/se2022-qiaqia/course-system/services"
@@ -42,6 +43,28 @@ func (api *Public) Login(c *gin.Context) {
 	}
 	resp.FailJust("登录失败", c)
 	return
+}
+
+// Logout
+// @Summary					登出。
+// @Description				登出。
+// @Tags					公共
+// @Accept					json
+// @Produce					json
+// @Security				ApiKeyAuth
+// @Success 				200 			{object}	resp.OkResponse{data=boolean}
+// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Router					/logout		 	[get]
+func (api *Public) Logout(c *gin.Context) {
+	t, _ := c.Get(middleware.TokenKey)
+	if ts, ok := t.(string); ok {
+		token.DeleteToken(ts)
+		resp.Ok(true, c)
+		return
+	} else {
+		resp.Fail(resp.ErrCodeUnauthorized, "未登录", c)
+		return
+	}
 }
 
 // Register

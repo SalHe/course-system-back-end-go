@@ -142,6 +142,14 @@ func (api *User) GetUserList(c *gin.Context) {
 func (api *User) DeleteUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
+	cla, _ := c.Get(middleware.ClaimsKey)
+	claims := cla.(*token.JwtClaims)
+
+	if claims.User.ID == uint(id) {
+		resp.FailJust("不能删除自己哦~", c)
+		return
+	}
+
 	err := S.Services.User.DeleteUser(uint(id))
 	if err == nil {
 		resp.Ok(true, c)

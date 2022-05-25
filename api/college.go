@@ -16,7 +16,6 @@ type College struct{}
 // @Accept					json
 // @Produce					json
 // @Param					queryFilter		body	req.QueryCollegesService	true	"查询条件"
-// @Security				ApiKeyAuth
 // @Success 				200 			{object} resp.OkResponse{data=[]resp.College}
 // @Router					/college/list [post]
 func (api *College) ListColleges(c *gin.Context) {

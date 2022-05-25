@@ -9,10 +9,11 @@ import (
 
 type College struct{}
 
-func (c College) Init(Router *gin.RouterGroup) {
-	publicRouter := Router.Group("/college")
+func (c College) Init(Router *gin.RouterGroup, RouterNoAuth *gin.RouterGroup) {
+	publicRouter := RouterNoAuth.Group("/college")
+	authRouter := Router.Group("/college")
 
-	privateRouter := publicRouter.Group("")
+	privateRouter := authRouter.Group("")
 	privateRouter.Use(middleware.AuthorizedRoleRequired(dao.RoleAdmin))
 
 	{

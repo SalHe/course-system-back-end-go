@@ -41,3 +41,16 @@ func (p *Public) Register(b req.RegisterInfo) (bool, error) {
 		return false, ErrConflict
 	}
 }
+
+func (p *Public) CanRegister() bool {
+	value, _ := Services.Setting.Get(KeyEnableRegister)
+	return value == "true"
+}
+
+func (p *Public) EnableRegister(enable bool) bool {
+	value := "false"
+	if enable {
+		value = "true"
+	}
+	return Services.Setting.Set(KeyEnableRegister, value)
+}

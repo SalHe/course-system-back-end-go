@@ -34,3 +34,7 @@ type QueryCollegesService struct {
 type IdReq struct {
 	Id uint `json:"id" binding:"required"`
 }
+
+type EnableRegisterRequest struct {
+	Enable bool `json:"enable" binding:"required"`
+}

@@ -6,6 +6,7 @@ import (
 
 const (
 	KeyCurrentSemester = "current_semester"
+	KeyEnableRegister  = "enable_register"
 )
 
 type Setting interface {

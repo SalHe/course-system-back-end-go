@@ -6,6 +6,7 @@ import (
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"time"
 )
 
 type Public struct{}
@@ -28,9 +29,10 @@ func (p *Public) Register(b req.RegisterInfo) (bool, error) {
 			Model: dao.Model{
 				ID: b.Id,
 			},
-			Username:  b.Username,
-			RealName:  b.RealName,
-			CollegeId: b.CollegeId,
+			Username:     b.Username,
+			RealName:     b.RealName,
+			CollegeId:    b.CollegeId,
+			EntranceYear: uint(time.Now().Year()),
 		}
 		user.SetPassword(b.Password)
 		if err = dao.DB.Create(&user).Error; err != nil {

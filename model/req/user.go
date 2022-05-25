@@ -18,7 +18,7 @@ type UpdateUserRequest struct {
 	Username     string   `json:"username" binding:"required,username" description:"用户名"`         // 用户名
 	RealName     string   `json:"realName" binding:"required,min=1,max=10" description:"真实姓名"`    // 真实姓名
 	CollegeId    uint     `json:"collegeId" binding:"required,min=1" description:"学院id"`          // 学院id
-	Role         dao.Role `json:"role" binding:"required" description:"角色"`                       // 角色
+	Role         dao.Role `json:"role" description:"角色"`                                          // 角色
 	EntranceYear uint     `json:"entranceYear" binding:"required,min=1980" description:"入学/入职年份"` // 入学/入职年份
 }
 

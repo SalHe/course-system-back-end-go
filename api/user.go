@@ -27,7 +27,16 @@ type User struct{}
 func (api *User) GetUserInfo(c *gin.Context) {
 	cla, _ := c.Get(middleware.ClaimsKey)
 	claims := cla.(*token.JwtClaims)
-	resp.Ok(resp.NewUser(claims.User), c)
+	// resp.Ok(resp.NewUser(claims.User), c)
+
+	user, err := S.Services.User.GetUser(claims.User.ID)
+	if err == nil {
+		resp.Ok(resp.NewUser(user), c)
+		return
+	} else {
+		resp.FailJust("查询失败", c)
+		return
+	}
 }
 
 // GetOtherUserInfo

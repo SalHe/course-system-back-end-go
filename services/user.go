@@ -70,7 +70,7 @@ func (u *User) GetUserList(b req.QueryUserRequest) (int64, []dao.User, error) {
 	if b.RealName != "" {
 		tx = tx.Where("real_name LIKE ?", "%"+b.RealName+"%")
 	}
-	if len(b.Roles) >= 0 {
+	if len(b.Roles) > 0 {
 		tx = tx.Where("role in (?)", b.Roles)
 	}
 	if len(b.CollegesId) > 0 {

@@ -214,7 +214,9 @@ func (api *User) UpdateUserInfo(c *gin.Context) {
 
 	updated, err := S.Services.User.UpdateUser(uint(id), b, true)
 	if err == nil {
-		resp.Ok(resp.NewUser(updated), c)
+		resp.Resp(resp.NewUser(updated),
+			"更新成功，非管理员仅允许更新用户名，同时不允许对用户提权为管理员，也不允许将管理员降权为其他用户。",
+			c)
 		return
 	} else if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, S.ErrNotFound) {
 		resp.Fail(resp.ErrCodeNotFound, "未找到对应用户", c)

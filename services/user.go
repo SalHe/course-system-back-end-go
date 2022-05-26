@@ -80,7 +80,7 @@ func (u *User) UpdateUser(id uint, b req.UpdateUserRequest, operatedByAdmin bool
 	if operatedByAdmin {
 		// 目前个人只允许修改用户名
 		user.RealName = b.RealName
-		if user.Role != dao.RoleAdmin {
+		if user.Role != dao.RoleAdmin && b.Role != dao.RoleAdmin {
 			user.Role = b.Role
 		}
 		user.CollegeId = b.CollegeId

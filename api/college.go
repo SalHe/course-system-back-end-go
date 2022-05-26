@@ -50,7 +50,7 @@ func (api *College) NewCollege(c *gin.Context) {
 	}
 
 	if college, err := S.Services.College.NewCollege(b); err != nil {
-		resp.FailJust("创建失败", c)
+		resp.FailJust("存在同名学院！", c)
 		return
 	} else {
 		resp.Ok(resp.NewCollege(college), c)

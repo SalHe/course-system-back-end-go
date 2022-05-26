@@ -16,7 +16,7 @@ import (
 
 var translator ut.Translator
 var (
-	regexUsername  = regexp.MustCompile(`^\w{4,16}$`)
+	regexUsername  = regexp.MustCompile(`^\w{4,32}$`)
 	regexpPassword = regexp.MustCompile(`^\w{6,16}$`)
 )
 
@@ -37,7 +37,7 @@ func initCustomValidation(validate *validator.Validate) {
 	})
 	validate.RegisterTranslation("username", translator,
 		func(ut ut.Translator) error {
-			return ut.Add("username", "{0}必须是4-16位字母或数字组成", false)
+			return ut.Add("username", "{0}必须是4-32位字母或数字组成", false)
 		},
 		func(ut ut.Translator, fe validator.FieldError) string {
 			t, _ := ut.T("username", fe.Field())

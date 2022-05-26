@@ -59,12 +59,16 @@ type CourseScheduleWithCourseSpecific struct {
 	CourseSpecificId uint
 }
 
-func CourseSchedule_CourseSpecific_Student(tx *gorm.DB) *gorm.DB {
+func CourseSchedule_CourseSpecific(tx *gorm.DB) *gorm.DB {
 	return tx.Table("course_schedules").
 		Joins("JOIN course_specific_course_schedule ON course_specific_course_schedule.course_schedule_id = course_schedules.id").
-		Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id").
-		Joins("JOIN course_specifics ON course_specifics.id = course_specific_id AND semester_id").
+		Joins("JOIN course_specifics ON course_specifics.id = course_specific_id").
 		Select("course_schedules.*, course_specific_course_schedule.course_specific_id")
+}
+
+func CourseSchedule_CourseSpecific_Student(tx *gorm.DB) *gorm.DB {
+	return CourseSchedule_CourseSpecific(tx).
+		Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id")
 }
 
 type CourseSpecificWithStudent struct {

@@ -219,12 +219,11 @@ func (c *Course) SelectCourse(b *req.SelectCourseRequest, operator *token.JwtCla
 
 		var schedules []*dao.CourseSchedule
 		var targetSchedule []*dao.CourseSchedule
-		tx := dao.DB.Table("course_schedules").Select("course_schedules.*").
-			Joins("JOIN course_specific_course_schedule ON course_specific_course_schedule.course_schedule_id = course_schedules.id").
-			Joins("JOIN student_courses ON student_courses.course_id = course_specific_course_schedule.course_specific_id AND student_courses.course_status IN (?)", []dao.CourseStatus{dao.CourseStatusNormal})
-		tx.Where("student_courses.student_id = ?", b.StudentId).
+		dao.CourseSchedule_CourseSpecific_Student(dao.DB).
+			Where("student_courses.student_id = ? AND student_courses.course_status IN (?)", b.StudentId, []dao.CourseStatus{dao.CourseStatusNormal}).
 			Find(&schedules)
-		tx.Where("course_specific_course_schedule.course_specific_id = ?", b.CourseId).
+		dao.CourseSchedule_CourseSpecific(dao.DB).
+			Where("course_specific_course_schedule.course_specific_id = ?", b.CourseId).
 			Find(&targetSchedule)
 
 		schedulesAll := make([]*req.CourseSchedule, len(schedules)+len(targetSchedule))

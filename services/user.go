@@ -6,6 +6,7 @@ import (
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strconv"
 )
 
 type User struct{}
@@ -56,12 +57,38 @@ func (u *User) GetUserCount() int64 {
 	return count
 }
 
-func (u *User) GetUserList(pageInfo req.Page) ([]dao.User, error) {
+func (u *User) GetUserList(b req.QueryUserRequest) (int64, []dao.User, error) {
 	var users []dao.User
-	if err := dao.DB.Preload(clause.Associations).Offset(pageInfo.Offset()).Limit(pageInfo.ActualSize()).Find(&users).Error; err != nil {
-		return nil, err
+
+	tx := dao.DB.Preload(clause.Associations).Model(&dao.User{})
+	if b.Id != 0 {
+		tx = tx.Where("id LIKE ?", "%"+strconv.Itoa(int(b.Id))+"%")
 	}
-	return users, nil
+	if b.Username != "" {
+		tx = tx.Where("username LIKE ?", "%"+b.Username+"%")
+	}
+	if b.RealName != "" {
+		tx = tx.Where("real_name LIKE ?", "%"+b.RealName+"%")
+	}
+	if len(b.Roles) >= 0 {
+		tx = tx.Where("role in (?)", b.Roles)
+	}
+	if len(b.CollegesId) > 0 {
+		tx = tx.Where("college_id in (?)", b.CollegesId)
+	}
+	if b.EntranceYearFrom > 0 {
+		tx = tx.Where("entrance_year >= ?", b.EntranceYearFrom)
+	}
+	if b.EntranceYearTo > 0 {
+		tx = tx.Where("entrance_year <= ?", b.EntranceYearTo)
+	}
+	var count int64
+	tx.Count(&count)
+	tx = tx.Offset(b.Offset()).Limit(b.ActualSize())
+	if err := tx.Find(&users).Error; err != nil {
+		return 0, nil, err
+	}
+	return count, users, nil
 }
 
 func (u *User) DeleteUser(id uint) error {

@@ -105,19 +105,17 @@ func (api *User) NewUser(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Param					page			body			req.Page			false	"分页"
+// @Param					page			body			req.QueryUserRequest	false	"查询信息"
 // @Success 				200 			{object}		resp.OkResponse{data=resp.Page{contents=[]resp.User}}
 // @Failure 				400 			{object} 		resp.ErrorResponse
 // @Router					/user/list		[post]
 func (api *User) GetUserList(c *gin.Context) {
-	var b req.Page
+	var b req.QueryUserRequest
 	if !req.BindAndValidate(c, &b) {
 		return
 	}
 
-	count := S.Services.User.GetUserCount()
-
-	users, err := S.Services.User.GetUserList(b)
+	count, users, err := S.Services.User.GetUserList(b)
 	if err == nil {
 		usersResp := make([]*resp.User, len(users))
 		for i, user := range users {

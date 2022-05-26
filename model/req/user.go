@@ -2,6 +2,17 @@ package req
 
 import "github.com/se2022-qiaqia/course-system/dao"
 
+type QueryUserRequest struct {
+	Page             `json:"page"`
+	Id               uint       `json:"id"`
+	Username         string     `json:"username"`
+	RealName         string     `json:"realName"`
+	Roles            []dao.Role `json:"roles"`
+	CollegesId       []uint     `json:"collegesId"`
+	EntranceYearFrom uint       `json:"entranceYearFrom"`
+	EntranceYearTo   uint       `json:"entranceYearTo"`
+}
+
 // NewUserRequest 新增用户信息
 type NewUserRequest struct {
 	Id           uint     `json:"id" binding:"required"`                                          // 用户id

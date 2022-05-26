@@ -62,98 +62,98 @@ func main() {
 	adminDefault.SetPassword("hello-admin")
 	dao.DB.FirstOrCreate(&adminDefault, "id = ?", adminDefault.ID)
 	teacherMath1 := &dao.User{
-		Username:     "math-teacher1",
+		Username:     "MathTeacher1",
 		RealName:     "数学教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeMath,
 		EntranceYear: 2019,
 	}
 	teacherMath2 := &dao.User{
-		Username:     "math-teacher2",
+		Username:     "MathTeacher2",
 		RealName:     "数学教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeMath,
 		EntranceYear: 2019,
 	}
 	teacherPhysical1 := &dao.User{
-		Username:     "physical-teacher1",
+		Username:     "PhysicalTeacher1",
 		RealName:     "物理教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegePhysical,
 		EntranceYear: 2019,
 	}
 	teacherPhysical2 := &dao.User{
-		Username:     "physical-teacher2",
+		Username:     "PhysicalTeacher2",
 		RealName:     "物理教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegePhysical,
 		EntranceYear: 2019,
 	}
 	teacherChemistry1 := &dao.User{
-		Username:     "chemistry-teacher1",
+		Username:     "ChemistryTeacher1",
 		RealName:     "化学教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeChemistry,
 		EntranceYear: 2019,
 	}
 	teacherChemistry2 := &dao.User{
-		Username:     "chemistry-teacher2",
+		Username:     "ChemistryTeacher2",
 		RealName:     "化学教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeChemistry,
 		EntranceYear: 2019,
 	}
 	teacherBiology1 := &dao.User{
-		Username:     "biology-teacher1",
+		Username:     "BiologyTeacher1",
 		RealName:     "生物教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeBiology,
 		EntranceYear: 2019,
 	}
 	teacherBiology2 := &dao.User{
-		Username:     "biology-teacher2",
+		Username:     "BiologyTeacher2",
 		RealName:     "生物教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeBiology,
 		EntranceYear: 2019,
 	}
 	teacherComputerScience1 := &dao.User{
-		Username:     "computer-science-teacher1",
+		Username:     "ComputerScienceTeacher1",
 		RealName:     "计算机科学教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeComputerScience,
 		EntranceYear: 2019,
 	}
 	teacherComputerScience2 := &dao.User{
-		Username:     "computer-science-teacher2",
+		Username:     "ComputerScienceTeacher2",
 		RealName:     "计算机科学教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeComputerScience,
 		EntranceYear: 2019,
 	}
 	teacherSoftwareEngineering1 := &dao.User{
-		Username:     "software-engineering-teacher1",
+		Username:     "SoftwareEngineeringTeacher1",
 		RealName:     "软件工程教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeSoftwareEngineering,
 		EntranceYear: 2019,
 	}
 	teacherSoftwareEngineering2 := &dao.User{
-		Username:     "software-engineering-teacher2",
+		Username:     "SoftwareEngineeringTeacher2",
 		RealName:     "软件工程教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeSoftwareEngineering,
 		EntranceYear: 2019,
 	}
 	teacherElectronicEngineering1 := &dao.User{
-		Username:     "electronic-engineering-teacher1",
+		Username:     "ElectronicEngineeringTeacher1",
 		RealName:     "电子工程教师1",
 		Role:         dao.RoleTeacher,
 		College:      collegeElectronicEngineering,
 		EntranceYear: 2019,
 	}
 	teacherElectronicEngineering2 := &dao.User{
-		Username:     "electronic-engineering-teacher2",
+		Username:     "ElectronicEngineeringTeacher2",
 		RealName:     "电子工程教师2",
 		Role:         dao.RoleTeacher,
 		College:      collegeElectronicEngineering,

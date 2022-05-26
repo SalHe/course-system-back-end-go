@@ -36,5 +36,5 @@ type IdReq struct {
 }
 
 type EnableRegisterRequest struct {
-	Enable bool `json:"enable" binding:"required"`
+	Enable bool `json:"enable"`
 }

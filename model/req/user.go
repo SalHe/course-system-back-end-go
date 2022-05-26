@@ -3,7 +3,7 @@ package req
 import "github.com/se2022-qiaqia/course-system/dao"
 
 type QueryUserRequest struct {
-	Page             `json:"page"`
+	Page
 	Id               uint       `json:"id"`
 	Username         string     `json:"username"`
 	RealName         string     `json:"realName"`

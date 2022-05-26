@@ -19,6 +19,15 @@ func (u *User) GetUser(id uint) (*dao.User, error) {
 	return &user, nil
 }
 
+func (u *User) GetUserByUsername(username string) (*dao.User, error) {
+	var user dao.User
+
+	if err := dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (u *User) NewUser(b req.NewUserRequest) error {
 	var user *dao.User
 	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ? OR username = ?", b.Id, b.Username, b.Username, b.Id).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {

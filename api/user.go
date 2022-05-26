@@ -46,13 +46,16 @@ func (api *User) GetUserInfo(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Param					id				path		int			true		"用户id"
+// @Param					id				path		string			true		"用户id"
 // @Success 				200 			{object}	resp.OkResponse{data=resp.User}
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/user/{id}		[get]
 func (api *User) GetOtherUserInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := S.Services.User.GetUser(uint(id))
+	if err != nil {
+		user, err = S.Services.User.GetUserByUsername(c.Param("id"))
+	}
 	if err == nil {
 		resp.Ok(resp.NewUser(user), c)
 		return

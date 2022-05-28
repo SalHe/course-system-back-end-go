@@ -4,6 +4,7 @@ import (
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/log"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -34,6 +35,8 @@ func Init() {
 	switch {
 	case database.Postgres != nil:
 		dialector = postgres.Open(database.Postgres.DSN())
+	case database.Mysql != nil:
+		dialector = mysql.Open(database.Mysql.DSN())
 	case database.Sqlite != nil:
 		dialector = sqlite.Open(database.Sqlite.Filename)
 	default:

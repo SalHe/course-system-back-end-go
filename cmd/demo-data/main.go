@@ -20,6 +20,9 @@ func main() {
 	if config.Config.Database.Postgres != nil {
 		fmt.Printf("您的数据库类型为: %s\n", "Postgres")
 		fmt.Printf("DSN=%s\n", config.Config.Database.Postgres.DSN())
+	} else if config.Config.Database.Mysql != nil {
+		fmt.Printf("您的数据库类型为: %s\n", "Mysql")
+		fmt.Printf("DSN=%s\n", config.Config.Database.Mysql.DSN())
 	} else if config.Config.Database.Sqlite != nil {
 		fmt.Printf("数据库类型：%s\n", "sqlite")
 		fmt.Printf("数据库文件：%s\n", config.Config.Database.Sqlite.Filename)

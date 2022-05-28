@@ -31,7 +31,7 @@ func (u *User) GetUserByUsername(username string) (*dao.User, error) {
 
 func (u *User) NewUser(b req.NewUserRequest) error {
 	var user *dao.User
-	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ? OR username = ?", b.Id, b.Username, b.Username, b.Id).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := dao.DB.Model(&dao.User{}).Where("id = ? OR username = ? OR username = ?", b.Id, b.Username, b.Id).First(&user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		user := &dao.User{
 			Model:        dao.Model{ID: b.Id},
 			Username:     b.Username,

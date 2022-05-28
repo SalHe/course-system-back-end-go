@@ -11,6 +11,6 @@ RUN go mod download && go mod verify
 
 COPY . .
 RUN go generate .
-RUN go build -v -o /usr/local/bin/app .
+RUN go build -buildvcs=false -v -o /usr/local/bin/app .
 
 CMD ["app"]

@@ -8,8 +8,9 @@ import (
 )
 
 func NewRouter(engine *gin.Engine) *gin.Engine {
-	gin.SetMode(gin.DebugMode)
-	if !config.Config.Debug {
+	if config.Config.Debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
 

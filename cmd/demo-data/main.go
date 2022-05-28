@@ -17,7 +17,10 @@ func main() {
 	dao.Migrate()
 
 	fmt.Printf("您的操作将对数据库产生影响, 请确保您的数据库已备份\n")
-	if config.Config.Database.Sqlite != nil {
+	if config.Config.Database.Postgres != nil {
+		fmt.Printf("您的数据库类型为: %s\n", "Postgres")
+		fmt.Printf("DSN=%s\n", config.Config.Database.Postgres.DSN())
+	} else if config.Config.Database.Sqlite != nil {
 		fmt.Printf("数据库类型：%s\n", "sqlite")
 		fmt.Printf("数据库文件：%s\n", config.Config.Database.Sqlite.Filename)
 	} else {

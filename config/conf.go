@@ -14,14 +14,6 @@ type Server struct {
 	Port uint `yaml:"port"`
 }
 
-type Sqlite struct {
-	Filename string `yaml:"filename"`
-}
-
-type Database struct {
-	Sqlite *Sqlite `yaml:"sqlite"`
-}
-
 type InMemory struct {
 	File string `yaml:"file"`
 }

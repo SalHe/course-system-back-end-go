@@ -6,13 +6,18 @@ import (
 	"github.com/se2022-qiaqia/course-system/model/req"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strconv"
 	"time"
 )
 
 type Public struct{}
 
 func (p *Public) Login(l req.LoginCredit) (user *dao.User, err error) {
-	if err = dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ? OR username = ?", l.Username, l.Username).First(&user).Error; err != nil {
+	id, err := strconv.Atoi(l.Username)
+	if err != nil {
+		id = -1
+	}
+	if err = dao.DB.Preload(clause.Associations).Model(&dao.User{}).Where("id = ? OR username = ?", id, l.Username).First(&user).Error; err != nil {
 		return nil, err
 	}
 

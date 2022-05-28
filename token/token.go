@@ -4,11 +4,10 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"strconv"
-
 	"github.com/golang-jwt/jwt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
+	"strconv"
 )
 
 var (
@@ -39,7 +38,9 @@ func WhenExit() {
 func NewJwt(user *dao.User) string {
 	signingString, err := jwt.NewWithClaims(signMethod, &JwtClaims{
 		StandardClaims: jwt.StandardClaims{
-			Id: strconv.Itoa(int(user.ID)),
+			Id:        strconv.Itoa(int(user.ID)),
+			IssuedAt:  jwt.TimeFunc().Unix(),
+			ExpiresAt: jwt.TimeFunc().Add(config.Config.Token.ExpireDuration()).Unix(),
 		},
 		User: user,
 	}).SignedString([]byte(config.Config.Token.SignKey))
@@ -89,7 +90,11 @@ func ClaimsFromJwt(jwtString string) *JwtClaims {
 
 func ToClaims(token string) *JwtClaims {
 	jwt2, _ := Storage.Get(token)
-	return ClaimsFromJwt(jwt2)
+	claims := ClaimsFromJwt(jwt2)
+	if claims == nil {
+		Storage.Delete(token)
+	}
+	return claims
 }
 
 func (c *JwtClaims) IsAdmin() bool {

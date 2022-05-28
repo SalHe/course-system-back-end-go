@@ -5,6 +5,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"time"
 )
 
 var Config RootConfig
@@ -31,7 +32,18 @@ type TokenStorage struct {
 
 type Token struct {
 	SignKey string       `yaml:"sign-key"`
+	Expire  string       `yaml:"expire"`
 	Storage TokenStorage `yaml:"storage"`
+}
+
+var defaultExpireDuration, _ = time.ParseDuration("30d")
+
+func (t *Token) ExpireDuration() time.Duration {
+	duration, err := time.ParseDuration(t.Expire)
+	if err != nil {
+		return defaultExpireDuration
+	}
+	return duration
 }
 
 type Log struct {

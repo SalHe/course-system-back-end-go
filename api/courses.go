@@ -154,7 +154,7 @@ func (api *Course) UpdateCourseCommon(c *gin.Context) {
 // @Param 					id				path		int 							true 	"课头ID"
 // @Param					new				body		req.UpdateCourseSpecificRequest	true	"新课头信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseCommon}	"更新后的课程信息"
+// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseSpecific}	"更新后的课程信息"
 // @Failure 				400 			{object} 	resp.ErrorResponse
 // @Router					/course/spec/{id} 	[put]
 func (api *Course) UpdateCourseSpecific(c *gin.Context) {

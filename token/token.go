@@ -23,9 +23,13 @@ type JwtClaims struct {
 
 func Init() {
 	tokenConf := config.Config.Token
-	if tokenConf.Storage.InMemory != nil {
+	if tokenConf.Storage.Redis {
+		Storage = &RedisTokenStorage{}
+	} else if tokenConf.Storage.InMemory != nil {
 		Storage = NewInMemoryTokenStorage()
 		Storage.(*InMemoryTokenStorage).Load(tokenConf.Storage.InMemory.File, false)
+	} else {
+		panic("请配置Token存储方式")
 	}
 }
 

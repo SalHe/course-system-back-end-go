@@ -19,6 +19,7 @@ type InMemory struct {
 }
 
 type TokenStorage struct {
+	Redis    bool      `yaml:"redis"`
 	InMemory *InMemory `yaml:"in-memory"`
 }
 
@@ -50,6 +51,7 @@ type RootConfig struct {
 	Server   Server   `yaml:"server"`
 	Database Database `yaml:"database"`
 	Token    Token    `yaml:"token"`
+	Redis    *redis   `yaml:"redis"`
 }
 
 func Init() {

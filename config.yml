@@ -22,9 +22,16 @@ database:
 #    database: course-system
   sqlite:
     filename: test.db
+#redis:
+#  host: 192.168.5.144
+#  port: 6379
+#  password: ""
+#  db: 0
+#  prefix: course-system
 token:
   sign-key: SDjhbdsfyg#@&IsaSDJHBVHJSGyeqgwjdhasvdyfGUYWGEYjg2VJWU3jqy2bheqwdsuyTUWYEGJj3h432byjtasbhdhasuye32y4ebwmasdasgdkSDUIHKSsaduiq23SDBVHadjfvbjyg3u4t1i4u1yI#$Y@Ubsadasmnbdhbsad
   expire: 240h  # 可用单位："ns", "us" (or "µs"), "ms", "s", "m", "h".
   storage:
+#    redis: true
     in-memory:
       file: tokens.json

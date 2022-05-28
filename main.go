@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/se2022-qiaqia/course-system/cache"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
 	docs "github.com/se2022-qiaqia/course-system/docs/swagger"
@@ -48,6 +49,11 @@ func main() {
 
 	dao.Init()
 	dao.Migrate()
+
+	// Redis 目前是非必须的
+	if config.Config.Redis != nil {
+		cache.Init()
+	}
 
 	// 引用一下，不然不会生成swagger文档
 	docs.SwaggerInfo.InstanceName()

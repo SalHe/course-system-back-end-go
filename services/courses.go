@@ -337,7 +337,7 @@ func (c *Course) GetStudentSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseS
 }
 
 func (c *Course) GetTeacherSchedules(b *req.GetSchedulesRequest) ([]*dao.CourseScheduleWithCourseSpecific, error) {
-	tx := dao.CourseSchedule_CourseSpecific_Student(dao.DB)
+	tx := dao.CourseSchedule_CourseSpecific(dao.DB)
 	if len(b.SemesterIds) > 0 {
 		tx = tx.Where("semester_id IN (?)", b.SemesterIds)
 	}

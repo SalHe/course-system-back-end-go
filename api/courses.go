@@ -332,7 +332,7 @@ func (api *Course) GetCourseSchedules(c *gin.Context) {
 	var err error
 	if user.Role == dao.RoleStudent {
 		schedules, err = S.Services.Course.GetStudentSchedules(&b)
-	} else if user.Role == dao.RoleAdmin {
+	} else if user.Role == dao.RoleTeacher {
 		schedules, err = S.Services.Course.GetTeacherSchedules(&b)
 	}
 

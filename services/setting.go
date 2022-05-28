@@ -18,7 +18,7 @@ type settingInDB struct{}
 
 func (s *settingInDB) Get(key string) (string, bool) {
 	var setting dao.Setting
-	if err := dao.DB.Model(&dao.Setting{}).Where("`key` = ?", key).First(&setting).Error; err != nil {
+	if err := dao.DB.Model(&dao.Setting{}).Where("name = ?", key).First(&setting).Error; err != nil {
 		return "", false
 	}
 	return setting.Value, true
@@ -27,10 +27,10 @@ func (s *settingInDB) Get(key string) (string, bool) {
 func (s *settingInDB) Set(key string, value string) bool {
 	var setting dao.Setting
 	var setError error
-	if err := dao.DB.Model(&dao.Setting{}).Where("`key` = ?", key).First(&setting).Error; err != nil {
-		setError = dao.DB.Create(&dao.Setting{Key: key, Value: value}).Error
+	if err := dao.DB.Model(&dao.Setting{}).Where("name = ?", key).First(&setting).Error; err != nil {
+		setError = dao.DB.Create(&dao.Setting{Name: key, Value: value}).Error
 	} else {
-		setError = dao.DB.Model(&dao.Setting{}).Where("`key` = ?", key).Update("value", value).Error
+		setError = dao.DB.Model(&dao.Setting{}).Where("name = ?", key).Update("value", value).Error
 	}
 	return setError == nil
 }

@@ -61,7 +61,10 @@ func Migrate() {
 	DB.AutoMigrate(&Semester{})
 	DB.AutoMigrate(&CourseSchedule{})
 	DB.AutoMigrate(&StudentCourse{})
+
+	DB.Migrator().RenameColumn(&Setting{}, "key", "name")
 	DB.AutoMigrate(&Setting{})
+
 }
 
 type Model struct {

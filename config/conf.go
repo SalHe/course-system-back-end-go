@@ -54,15 +54,17 @@ type RootConfig struct {
 	Redis    *redis   `yaml:"redis"`
 }
 
-func Init() {
+func Init(path string) {
 	var bytes []byte
 	var err error
-	if bytes, err = ioutil.ReadFile("./config.yml"); err != nil {
+	if bytes, err = ioutil.ReadFile(path); err != nil {
 		log.Error().Err(err).Msg("读取配置文件失败!")
+		panic(err)
 		return
 	}
 	if err = yaml.Unmarshal(bytes, &Config); err != nil {
 		log.Error().Err(err).Msg("解析配置文件失败!")
+		panic(err)
 		return
 	}
 }

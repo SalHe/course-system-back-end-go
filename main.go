@@ -3,21 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/se2022-qiaqia/course-system/cache"
 	"github.com/se2022-qiaqia/course-system/config"
-	"github.com/se2022-qiaqia/course-system/dao"
 	docs "github.com/se2022-qiaqia/course-system/docs/swagger"
+	"github.com/se2022-qiaqia/course-system/flags"
 	"github.com/se2022-qiaqia/course-system/log"
-	"github.com/se2022-qiaqia/course-system/middleware"
-	"github.com/se2022-qiaqia/course-system/router"
+	"github.com/se2022-qiaqia/course-system/server"
 	"github.com/se2022-qiaqia/course-system/token"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 )
@@ -41,25 +35,19 @@ import (
 // 我也不知道这里搞什么玩意儿他不给我生成认证的描述，很是无语
 
 func main() {
-	config.Init()
-	log.Init()
+	flags.Parse()
+	config.Init(*flags.ConfigPath)
+	abs, _ := filepath.Abs(*flags.ConfigPath)
+	fmt.Printf("启用日志文件：%s\n", abs)
 
-	token.Init()
+	server.Init()
 	defer token.WhenExit()
-
-	dao.Init()
-	dao.Migrate()
-
-	// Redis 目前是非必须的
-	if config.Config.Redis != nil {
-		cache.Init()
-	}
 
 	// 引用一下，不然不会生成swagger文档
 	docs.SwaggerInfo.InstanceName()
 
-	server := createServer()
-	runServer(server)
+	svr := server.CreateServer()
+	server.RunServer(svr)
 
 	// 设置可控退出逻辑
 
@@ -69,7 +57,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
+	if err := svr.Shutdown(ctx); err != nil {
 		log.L.Error().Err(err).Msg("关闭服务器出错")
 	}
 
@@ -80,47 +68,4 @@ func main() {
 	}
 	log.L.Info().Msg("See you.")
 
-}
-
-func runServer(server *http.Server) {
-	go func() {
-		// _ = r.Run(fmt.Sprintf(":%d", config.Config.Server.Port))
-		log.L.Info().
-			Str("addr", server.Addr).
-			Msg("服务将运行")
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.L.Fatal().Err(err).Msg("服务器启动失败")
-		}
-	}()
-}
-
-func createServer() *http.Server {
-	baseEngine := gin.New()
-
-	logger := log.L
-	baseEngine.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: false,
-		MaxAge:           12 * time.Hour,
-	}))
-	baseEngine.Use(middleware.LoggerWithZerolog(logger))
-	baseEngine.Use(middleware.RecoveryWithZerolog(logger, true, config.Config.Debug))
-
-	r := router.NewRouter(baseEngine)
-
-	r.GET("/swagger/*any",
-		ginSwagger.WrapHandler(
-			swaggerFiles.Handler,
-			ginSwagger.PersistAuthorization(true),
-		),
-	)
-
-	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", config.Config.Server.Port),
-		Handler: r,
-	}
-	return server
 }

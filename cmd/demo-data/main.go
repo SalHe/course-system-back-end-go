@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"github.com/se2022-qiaqia/course-system/config"
 	"github.com/se2022-qiaqia/course-system/dao"
-	"github.com/se2022-qiaqia/course-system/log"
+	"github.com/se2022-qiaqia/course-system/flags"
+	"github.com/se2022-qiaqia/course-system/server"
 	"github.com/se2022-qiaqia/course-system/services"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	config.Init()
-	log.Init()
-	dao.Init()
-	dao.Migrate()
+	config.Init(*flags.ConfigPath)
+	server.Init()
 
 	fmt.Printf("您的操作将对数据库产生影响, 请确保您的数据库已备份\n")
 	if config.Config.Database.Postgres != nil {
@@ -38,6 +37,10 @@ func main() {
 		return
 	}
 
+	InsertDemoData()
+}
+
+func InsertDemoData() {
 	collegeAnonymous := &dao.College{
 		Model: dao.Model{
 			ID: 1,
@@ -755,5 +758,4 @@ func main() {
 			},
 		},
 	})
-
 }

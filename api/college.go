@@ -16,7 +16,7 @@ type College struct{}
 // @Accept					json
 // @Produce					json
 // @Param					queryFilter		body	req.QueryCollegesService	true	"查询条件"
-// @Success 				200 			{object} resp.OkResponse{data=[]resp.College}
+// @Success 				200 			{object} resp.Response{data=[]resp.College}
 // @Router					/college/list [post]
 func (api *College) ListColleges(c *gin.Context) {
 	var b req.QueryCollegesService
@@ -40,8 +40,7 @@ func (api *College) ListColleges(c *gin.Context) {
 // @Produce					json
 // @Param					new				body		req.QueryCollegesService	true	"新学院信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.College}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.College}
 // @Router					/college/new 	[post]
 func (api *College) NewCollege(c *gin.Context) {
 	var b req.NewCollegeService

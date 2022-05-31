@@ -16,8 +16,7 @@ type Semester struct{}
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=[]resp.Semester}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=[]resp.Semester}
 // @Router					/semester [get]
 func (api *Semester) QuerySemester(c *gin.Context) {
 	if semesters, err := S.Services.Semester.GetSemesters(); err == nil {
@@ -40,8 +39,7 @@ func (api *Semester) QuerySemester(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					new				body	 req.Semester	true		"学期信息"
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} "创建好的学期"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.Semester} "创建好的学期"
 // @Router					/semester [post]
 func (api *Semester) CreateSemester(c *gin.Context) {
 	var reqSemester req.Semester
@@ -66,8 +64,7 @@ func (api *Semester) CreateSemester(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} "当前学期"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.Semester} "当前学期"
 // @Router					/semester/curr [get]
 func (api *Semester) GetCurrentSemester(c *gin.Context) {
 	if semester, err := S.Services.Semester.GetCurrentSemester(); err == nil {
@@ -88,8 +85,7 @@ func (api *Semester) GetCurrentSemester(c *gin.Context) {
 // @Produce					json
 // @Security				ApiKeyAuth
 // @Param					id				body		req.IdReq		true		"学期id"
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.Semester} 	"更新后的当前学期"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.Semester} 	"更新后的当前学期"
 // @Router					/semester/curr [post]
 func (api *Semester) SetCurrentSemester(c *gin.Context) {
 	var reqId req.IdReq

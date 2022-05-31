@@ -25,8 +25,7 @@ type Course struct{}
 // @Produce					json
 // @Param					params			body		req.QueryCoursesRequest	true	"筛选条件"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.Page{contents=[]resp.CourseCommonWithSpecifics}}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.Page{contents=[]resp.CourseCommonWithSpecifics}}
 // @Router					/course/list 	[post]
 func (api *Course) GetCourseList(c *gin.Context) {
 	var b req.QueryCoursesRequest
@@ -55,8 +54,7 @@ func (api *Course) GetCourseList(c *gin.Context) {
 // @Produce					json
 // @Param					params			body		req.NewCourseRequest	true	"课程信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseCommon}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseCommon}
 // @Router					/course		 	[post]
 func (api *Course) NewCourse(c *gin.Context) {
 	var b req.NewCourseRequest
@@ -81,8 +79,7 @@ func (api *Course) NewCourse(c *gin.Context) {
 // @Produce					json
 // @Param					params			body		req.OpenCourseRequest	true	"课程信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseSpecific}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseSpecific}
 // @Router					/course/open	[post]
 func (api *Course) OpenCourse(c *gin.Context) {
 	var b req.OpenCourseRequest
@@ -123,8 +120,7 @@ func (api *Course) OpenCourse(c *gin.Context) {
 // @Param 					id				path		int 							true 	"课程ID"
 // @Param					new				body		req.UpdateCourseCommonRequest	true	"新课程信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseCommon}	"更新后的课程信息"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseCommon}	"更新后的课程信息"
 // @Router					/course/{id} 	[put]
 func (api *Course) UpdateCourseCommon(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -154,8 +150,7 @@ func (api *Course) UpdateCourseCommon(c *gin.Context) {
 // @Param 					id				path		int 							true 	"课头ID"
 // @Param					new				body		req.UpdateCourseSpecificRequest	true	"新课头信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseSpecific}	"更新后的课程信息"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseSpecific}	"更新后的课程信息"
 // @Router					/course/spec/{id} 	[put]
 func (api *Course) UpdateCourseSpecific(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -200,8 +195,7 @@ func (api *Course) UpdateCourseSpecific(c *gin.Context) {
 // @Produce					json
 // @Param					id				body		req.SelectCourseRequest	true "选课信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseSpecific}	"选中的课头"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseSpecific}	"选中的课头"
 // @Router					/course/select 	[post]
 func (api *Course) SelectCourse(c *gin.Context) {
 	// TODO 待精心测试该API
@@ -250,8 +244,7 @@ func (api *Course) SelectCourse(c *gin.Context) {
 // @Produce					json
 // @Param					id				body		req.SelectCourseRequest	true "撤课信息"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=resp.CourseSpecific}	"撤掉的课头信息"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=resp.CourseSpecific}	"撤掉的课头信息"
 // @Router					/course/select 	[delete]
 func (api *Course) UnSelectCourse(c *gin.Context) {
 	// TODO 待精心测试该API
@@ -291,8 +284,7 @@ func (api *Course) UnSelectCourse(c *gin.Context) {
 // @Produce					json
 // @Param					params				body		req.GetSchedulesRequest	true "查询信息"
 // @Security				ApiKeyAuth
-// @Success 				200 				{object} 	resp.OkResponse{data=[]resp.CourseScheduleWithCourseSpecific}
-// @Failure 				400 				{object} 	resp.ErrorResponse
+// @Success 				200 				{object} 	resp.Response{data=[]resp.CourseScheduleWithCourseSpecific}
 // @Router					/course/schedules 	[post]
 func (api *Course) GetCourseSchedules(c *gin.Context) {
 	var b req.GetSchedulesRequest
@@ -367,8 +359,7 @@ func (api *Course) GetCourseSchedules(c *gin.Context) {
 // @Produce					json
 // @Param 					id				path		int 							true 	"课头ID"
 // @Security				ApiKeyAuth
-// @Success 				200 			{object} 	resp.OkResponse{data=[]resp.CourseCommon}	"更新后的课程信息"
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object} 	resp.Response{data=[]resp.CourseCommon}	"更新后的课程信息"
 // @Router					/course/spec/{id} 	[get]
 func (api *Course) GetCourseSpecificDetails(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))

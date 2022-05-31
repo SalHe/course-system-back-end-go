@@ -5,15 +5,10 @@ import (
 	"net/http"
 )
 
-type ErrorResponse struct {
-	Msg  string  `json:"msg"`
-	Code ErrCode `json:"code"`
-}
-
-type OkResponse struct {
-	Msg  string      `json:"msg"`
-	Code ErrCode     `json:"code"`
-	Data interface{} `json:"data"`
+type Response struct {
+	Msg  string      `json:"msg"`  // 消息，当发生错误时，该提示信息可以用于向用户展示（也可以用于调试），约定此信息必须是用户友好型。
+	Code ErrCode     `json:"code"` // 状态码，约定：当为0时表示操作成功，为负数时表示错误，有对应的错误码；暂时未定义正数状态码。
+	Data interface{} `json:"data"` // 实际响应数据。
 }
 
 type Page struct {
@@ -40,7 +35,7 @@ func Ok(data interface{}, c *gin.Context) {
 }
 
 func Resp(data interface{}, msg string, c *gin.Context) {
-	c.JSON(http.StatusOK, OkResponse{
+	c.JSON(http.StatusOK, Response{
 		Msg:  msg,
 		Code: ErrCodeOk,
 		Data: data,
@@ -52,9 +47,10 @@ func FailJust(msg string, c *gin.Context) {
 }
 
 func Fail(errCode ErrCode, msg string, c *gin.Context) {
-	c.AbortWithStatusJSON(http.StatusOK, ErrorResponse{
+	c.AbortWithStatusJSON(http.StatusOK, Response{
 		Msg:  msg,
 		Code: errCode,
+		Data: nil,
 	})
 }
 

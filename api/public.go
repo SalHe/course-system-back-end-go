@@ -21,8 +21,7 @@ type Public struct{}
 // @Accept					json
 // @Produce					json
 // @Param					params			body		req.LoginCredit		true	"登录凭据"
-// @Success 				200 			{object}	resp.OkResponse{data=string}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object}	resp.Response{data=string}
 // @Router					/login		 	[post]
 func (api *Public) Login(c *gin.Context) {
 	var credit req.LoginCredit
@@ -52,8 +51,7 @@ func (api *Public) Login(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Security				ApiKeyAuth
-// @Success 				200 			{object}	resp.OkResponse{data=boolean}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object}	resp.Response{data=boolean}
 // @Router					/logout		 	[get]
 func (api *Public) Logout(c *gin.Context) {
 	t, _ := c.Get(middleware.TokenKey)
@@ -74,8 +72,7 @@ func (api *Public) Logout(c *gin.Context) {
 // @Accept					json
 // @Produce					json
 // @Param					params			body		req.RegisterInfo		true	"注册信息"
-// @Success 				200 			{object}	resp.OkResponse{data=boolean}
-// @Failure 				400 			{object} 	resp.ErrorResponse
+// @Success 				200 			{object}	resp.Response{data=boolean}
 // @Router					/register		[post]
 func (api *Public) Register(c *gin.Context) {
 	if !S.Services.Public.CanRegister() {
@@ -112,8 +109,7 @@ func (api *Public) Register(c *gin.Context) {
 // @Tags					公共
 // @Accept					json
 // @Produce					json
-// @Success 				200 					{object}	resp.OkResponse{data=boolean}
-// @Failure 				400 					{object} 	resp.ErrorResponse
+// @Success 				200 					{object}	resp.Response{data=boolean}
 // @Router					/register/enable		[get]
 func (api *Public) CanRegister(c *gin.Context) {
 	resp.Ok(S.Services.Public.CanRegister(), c)
@@ -127,8 +123,7 @@ func (api *Public) CanRegister(c *gin.Context) {
 // @Produce					json
 // @Param					params					body		req.EnableRegisterRequest		true "开放注册请求"
 // @Security				ApiKeyAuth
-// @Success 				200 					{object}	resp.OkResponse{data=boolean} "操作后的开放状态"
-// @Failure 				400 					{object} 	resp.ErrorResponse
+// @Success 				200 					{object}	resp.Response{data=boolean} "操作后的开放状态"
 // @Router					/register/enable		[post]
 func (api *Public) EnableRegister(c *gin.Context) {
 	var b req.EnableRegisterRequest
